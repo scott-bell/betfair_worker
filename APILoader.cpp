@@ -33,43 +33,15 @@ void APILoader::listMarketCatalogue() {
     tree.put_child("params", boost::property_tree::ptree());
     tree.get_child("params").put_child("filter", filter.ptree());
 
-
+    std::set<std::string> marketProjection = {"COMPETITION", "EVENT", "EVENT_TYPE", "MARKET_START_TIME", "MARKET_DESCRIPTION", "RUNNER_DESCRIPTION", "RUNNER_METADATA"};
     tree.get_child("params").put_child("marketProjection", boost::property_tree::ptree());
-    {
+
+    for (auto& item : marketProjection) {
         ptree child1;
-        child1.put("","COMPETITION");
+        child1.put("",item);
         tree.get_child("params").get_child("marketProjection").push_back(std::make_pair("",child1));
     }
-    {
-        ptree child1;
-        child1.put("","EVENT");
-        tree.get_child("params").get_child("marketProjection").push_back(std::make_pair("",child1));
-    }
-    {
-        ptree child1;
-        child1.put("","EVENT_TYPE");
-        tree.get_child("params").get_child("marketProjection").push_back(std::make_pair("",child1));
-    }
-    {
-        ptree child1;
-        child1.put("","MARKET_START_TIME");
-        tree.get_child("params").get_child("marketProjection").push_back(std::make_pair("",child1));
-    }
-    {
-        ptree child1;
-        child1.put("","MARKET_DESCRIPTION");
-        tree.get_child("params").get_child("marketProjection").push_back(std::make_pair("",child1));
-    }
-    {
-        ptree child1;
-        child1.put("","RUNNER_DESCRIPTION");
-        tree.get_child("params").get_child("marketProjection").push_back(std::make_pair("",child1));
-    }
-    {
-        ptree child1;
-        child1.put("","RUNNER_METADATA");
-        tree.get_child("params").get_child("marketProjection").push_back(std::make_pair("",child1));
-    }
+
     tree.get_child("params").put("maxResults",10);
 
     std::string json;
