@@ -16,7 +16,6 @@
 #include <betfair_data/BetfairEvent.h>
 #include "BetfairData.h"
 
-using HttpsClient = SimpleWeb::Client<SimpleWeb::HTTPS>;
 using std::cout;
 using std::endl;
 

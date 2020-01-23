@@ -4,6 +4,10 @@
 
 #include "NavigationLoader.h"
 
+using boost::property_tree::ptree;
+using HttpsClient = SimpleWeb::Client<SimpleWeb::HTTPS>;
+
+
 void NavigationLoader::init() {
     m_betfairMarkets.reserve(30000);
     m_betfairEvent.reserve(5000);
@@ -32,8 +36,6 @@ void NavigationLoader::init() {
                 if(!ec)
                 {
                     boost::property_tree::ptree parseTree;
-                    //response->content.string();
-                    //response->content
                     {
                         auto t1 = std::chrono::high_resolution_clock::now();
                         std::cout << "Parsing JSON structure ... " << response->content.size() << " bytes" << std::endl;

@@ -30,7 +30,7 @@ public:
     }
     BetfairEventType& addEventType(const std::string& id, std::string name);
     BetfairEvent& addEvent(const std::string &id, std::string name, std::string country_code);
-    BetfairMarket& addMarket(const std::string &id, std::string exchange_id, std::string market_start_time, std::string market_type, int number_of_winners, std::string name);
+    BetfairMarket& addMarket(const std::string &id, std::string exchange_id, std::string market_start_time, std::string market_type, std::optional<int> number_of_winners, std::string name);
     BetfairGroup& addGroup(const std::string &id, std::string name);
     BetfairRace& addRace(std::string id, std::string name, std::string start_time, std::string venue, std::string race_number, std::string country_code);
     int displayEventType(const BetfairEventType& item) const;
