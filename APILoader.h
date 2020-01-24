@@ -6,10 +6,12 @@
 #define BETFAIR_WORKER_APILOADER_H
 
 #include <3rd-party/SimpleWeb/client_https.hpp>
+#include <betting_type/MarketCatalogue.h>
 
 class APILoader {
 public:
-    void listMarketCatalogue();
+    std::vector<MarketCatalogue> listMarketCatalogue(const MarketFilter &filter, const std::set<std::string>& marketProjection, const std::string& sort,
+                             int maxResults, const std::string& locale);
 };
 
 
