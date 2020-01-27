@@ -10,7 +10,6 @@ boost::property_tree::ptree LimitOrder::ptree() const {
 
     boost::property_tree::ptree tree;
 
-
     tree.put("size",size);
     tree.put("price",price);
     tree.put("persistenceType",persistenceType);

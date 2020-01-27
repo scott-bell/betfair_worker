@@ -9,13 +9,14 @@
 #include <optional>
 #include <vector>
 #include <map>
+#include <jsoncpp/json/json.h>
 #include "Order.h"
 #include "Match.h"
 #include "StartingPrices.h"
 #include "ExchangePrices.h"
 
 struct Runner {
-    unsigned long selectionId;
+    long selectionId;
     double handicap;
     std::string status;
     std::optional<double> adjustmentFactor;
@@ -27,6 +28,8 @@ struct Runner {
     std::optional<std::vector<Order>> orders;
     std::optional<std::vector<Match>> matches;
     std::optional<std::map<std::string, Match>> matchesByStrategy;
+
+    explicit Runner(Json::Value json);
 
 };
 

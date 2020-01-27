@@ -10,11 +10,13 @@
 #include <optional>
 #include "PriceSize.h"
 
-class ExchangePrices {
+struct ExchangePrices {
 
     std::optional<std::vector<PriceSize>> availableToBack;
     std::optional<std::vector<PriceSize>> availableToLay;
     std::optional<std::vector<PriceSize>> tradedVolume;
+
+    explicit ExchangePrices(Json::Value json);
 
 };
 

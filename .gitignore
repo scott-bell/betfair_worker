@@ -1,0 +1,18 @@
+CMakeCache.txt
+CMakeFiles
+cmake-build-debug
+CMakeScripts
+Makefile
+cmake_install.cmake
+install_manifest.txt
+*.cmake
+Testing
+compile_commands.json
+.usages_clang
+.idea
+
+*.crt
+*.key
+
+# executables
+betfair_examples

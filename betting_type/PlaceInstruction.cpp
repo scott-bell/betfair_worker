@@ -7,8 +7,7 @@
 #include <utility>
 
 boost::property_tree::ptree PlaceInstruction::ptree() const {
-    using boost::property_tree::ptree;
-    ptree tree;
+    boost::property_tree::ptree tree;
 
 
     tree.put("orderType",orderType);

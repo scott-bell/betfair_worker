@@ -8,7 +8,7 @@
 #include <optional>
 
 struct MarketVersion {
-    int version;
+    long version;
 };
 
 

@@ -8,6 +8,7 @@
 
 #include <string>
 #include <optional>
+#include <jsoncpp/json/json.h>
 
 struct Order {
     std::string betId;
@@ -27,6 +28,8 @@ struct Order {
     std::optional<double> sizeVoided;
     std::optional<std::string> customerOrderRef;
     std::optional<std::string> customerStrategyRef;
+
+    explicit Order(Json::Value json);
 
 };
 

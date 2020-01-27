@@ -6,9 +6,12 @@
 #define BETFAIR_WORKER_PRICESIZE_H
 
 
+#include <jsoncpp/json/json.h>
+
 struct PriceSize {
     double price;
     double size;
+    explicit PriceSize(Json::Value json);
 };
 
 

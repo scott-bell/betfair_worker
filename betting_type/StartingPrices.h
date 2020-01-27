@@ -8,6 +8,7 @@
 
 #include <vector>
 #include <optional>
+#include <jsoncpp/json/json.h>
 #include "PriceSize.h"
 
 struct StartingPrices {
@@ -16,6 +17,8 @@ struct StartingPrices {
     std::optional<std::vector<PriceSize>> backStakeTaken;
     std::optional<std::vector<PriceSize>> layLiabilityTaken;
     double actualSP;
+
+    explicit StartingPrices(Json::Value json);
 
 };
 

@@ -7,6 +7,7 @@
 
 #include <string>
 #include <optional>
+#include <jsoncpp/json/json.h>
 
 struct Match {
     std::optional<std::string> betId;
@@ -15,6 +16,7 @@ struct Match {
     double price;
     double size;
     std::optional<std::string> matchDate;
+    explicit Match(Json::Value json);
 
 };
 

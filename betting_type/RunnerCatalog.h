@@ -12,7 +12,7 @@
 
 struct RunnerCatalog {
 
-    unsigned long selectionId;
+    long selectionId;
     std::string runnerName;
     double handicap;
     int sortPriority;
