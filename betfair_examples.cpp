@@ -40,9 +40,13 @@ int main() {
 
     std::vector<MarketBook> v = api.listMarketBook({"1.167920782"}, priceProjection, "ALL", "NO_ROLLUP", true, false,std::nullopt,"GBP","en",std::nullopt, std::nullopt);*/
 
-    CurrentOrderSummaryReport sum = api.listCurrentOrders(std::nullopt, std::nullopt, "ALL", std::nullopt, std::nullopt, std::nullopt, "BY_PLACE_TIME", "EARLIEST_TO_LATEST", 0, 100);
+    //CurrentOrderSummaryReport sum = api.listCurrentOrders(std::nullopt, std::nullopt, "ALL", std::nullopt, std::nullopt, std::nullopt, "BY_PLACE_TIME", "EARLIEST_TO_LATEST", 0, 100);
 
-    std::cout << "Goodbye." << std::endl;
+    CancelInstruction ci{"193033882514", 0.99};
+    std::forward_list<CancelInstruction> fl = {ci};
+    CancelExecutionReport report = api.cancelOrders("1.167203295",fl,std::nullopt);
+
+    std::cout << "Finished" << std::endl;
 
 
     return 0;
