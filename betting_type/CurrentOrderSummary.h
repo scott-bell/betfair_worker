@@ -35,6 +35,8 @@ struct CurrentOrderSummary {
     std::optional<std::string> customerStrategyRef;
 
 
+    explicit CurrentOrderSummary(Json::Value json);
+
 };
 
 

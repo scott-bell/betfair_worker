@@ -32,13 +32,15 @@ int main() {
     PlaceExecutionReport per = api.placeOrders("1.167886771", instructions, "Test1", std::nullopt, "TEST1", false);*/
 
 
-    std::vector<std::string> priceData = {"SP_AVAILABLE", "EX_TRADED", "EX_ALL_OFFERS", "EX_TRADED"};
+    /*std::vector<std::string> priceData = {"SP_AVAILABLE", "EX_TRADED", "EX_ALL_OFFERS", "EX_TRADED"};
     std::vector<std::string> strategyRefs = {};
     std::vector<std::string> betIds = {};
     ExBestOffersOverrides exBestOffersOverrides { 10, "STAKE", 100, 2.5, 5 };
     PriceProjection priceProjection{ priceData, std::nullopt, true, true };
 
-    std::vector<MarketBook> v = api.listMarketBook({"1.167920782"}, priceProjection, "ALL", "NO_ROLLUP", true, false,std::nullopt,"GBP","en",std::nullopt, std::nullopt);
+    std::vector<MarketBook> v = api.listMarketBook({"1.167920782"}, priceProjection, "ALL", "NO_ROLLUP", true, false,std::nullopt,"GBP","en",std::nullopt, std::nullopt);*/
+
+    CurrentOrderSummaryReport sum = api.listCurrentOrders(std::nullopt, std::nullopt, "ALL", std::nullopt, std::nullopt, std::nullopt, "BY_PLACE_TIME", "EARLIEST_TO_LATEST", 0, 100);
 
     std::cout << "Goodbye." << std::endl;
 

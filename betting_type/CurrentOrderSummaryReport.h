@@ -12,6 +12,10 @@ struct CurrentOrderSummaryReport {
     std::vector<CurrentOrderSummary> currentOrders;
     bool moreAvailable;
 
+
+    CurrentOrderSummaryReport() = default; // TODO: Remove this
+    explicit CurrentOrderSummaryReport(Json::Value json);
+
 };
 
 

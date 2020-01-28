@@ -12,6 +12,102 @@
 using boost::property_tree::ptree;
 using HttpsClient = SimpleWeb::Client<SimpleWeb::HTTPS>;
 
+CurrentOrderSummaryReport APILoader::listCurrentOrders(std::optional<std::set<std::string>> betIds,
+                                                       std::optional<std::set<std::string>> marketIds,
+                                                       std::optional<std::string> orderProjection,
+                                                       std::optional<std::set<std::string>> customerOrderRefs,
+                                                       std::optional<std::set<std::string>> customerStrategyRefs,
+                                                       std::optional<TimeRange> dateRange,
+                                                       std::optional<std::string> orderBy,
+                                                       std::optional<std::string> sortDir,
+                                                       std::optional<int> fromRecord, std::optional<int> recordCount) {
+    CurrentOrderSummaryReport result;
+
+    ptree tree;
+    tree.put("id", "1");
+    tree.put("jsonrpc", "2.0");
+    tree.put("method", "SportsAPING/v1.0/listCurrentOrders");
+    tree.put_child("params", boost::property_tree::ptree());
+
+    if (betIds.has_value())
+    {
+        ptree ntree;
+        for (const auto& s : betIds.value()) {
+            ptree child;
+            child.put("", s);
+            ntree.push_back(std::make_pair("", child));
+        }
+        tree.get_child("params").put_child("betIds", ntree);
+    }
+    if (marketIds.has_value())
+    {
+        ptree ntree;
+        for (const auto& s : marketIds.value()) {
+            ptree child;
+            child.put("", s);
+            ntree.push_back(std::make_pair("", child));
+        }
+        tree.get_child("params").put_child("marketIds", ntree);
+    }
+    if (orderProjection.has_value())
+        tree.get_child("params").put("orderProjection", orderProjection.value());
+    if (customerOrderRefs.has_value())
+    {
+        ptree ntree;
+        for (const auto& s : customerOrderRefs.value()) {
+            ptree child;
+            child.put("", s);
+            ntree.push_back(std::make_pair("", child));
+        }
+        tree.get_child("params").put_child("customerOrderRefs", ntree);
+    }
+    if (customerStrategyRefs.has_value())
+    {
+        ptree ntree;
+        for (const auto& s : customerStrategyRefs.value()) {
+            ptree child;
+            child.put("", s);
+            ntree.push_back(std::make_pair("", child));
+        }
+        tree.get_child("params").put_child("customerStrategyRefs", ntree);
+    }
+    if (dateRange.has_value())
+        tree.get_child("params").put_child("dateRange", dateRange.value().ptree());
+    if (orderBy.has_value())
+        tree.get_child("params").put("orderBy", orderBy.value());
+    if (sortDir.has_value())
+        tree.get_child("params").put("sortDir", sortDir.value());
+    if (fromRecord.has_value())
+        tree.get_child("params").put("fromRecord", fromRecord.value());
+    if (recordCount.has_value())
+        tree.get_child("params").put("recordCount", recordCount.value());
+
+    std::string json;
+    std::stringstream ss;
+    boost::property_tree::json_parser::write_json(ss, tree);
+    std::cout << ss.str();
+
+    client.request(
+            "POST",
+            "/exchange/betting/json-rpc/v1",
+            ss.str(),
+            header,
+            [&](const std::shared_ptr<HttpsClient::Response>& response,
+                const SimpleWeb::error_code)
+            {
+                Json::Value root;
+                //std::cout << response->content.string() << std::endl;
+                response->content >> root;
+                result = CurrentOrderSummaryReport(root["result"]);
+            }
+    );
+    client.io_service->run();
+
+
+    return result;
+}
+
+
 
 std::vector<MarketBook> APILoader::listMarketBook(const std::vector<std::string>& marketIds, std::optional<PriceProjection> priceProjection,
                                                   std::optional<std::string> orderProjection, std::optional<std::string> matchProjection,
@@ -146,8 +242,7 @@ PlaceExecutionReport APILoader::placeOrders(const std::string& marketId, const s
             {
                 Json::Value root;
                 response->content >> root;
-                const Json::Value resultNode = root["result"];
-                result = PlaceExecutionReport(resultNode);
+                result = PlaceExecutionReport(root["result"]);
             }
     );
     client.io_service->run();
@@ -215,4 +310,5 @@ APILoader::APILoader():
     header.emplace("X-Application", APILoader::applicationId);
     header.emplace("X-Authentication", APILoader::token);
 }
+
 
