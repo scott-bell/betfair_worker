@@ -13,7 +13,7 @@ using boost::property_tree::ptree;
 using HttpsClient = SimpleWeb::Client<SimpleWeb::HTTPS>;
 
 
-std::vector<MarketBook> APILoader::listMarketBook(std::vector<std::string> marketIds, std::optional<PriceProjection> priceProjection,
+std::vector<MarketBook> APILoader::listMarketBook(const std::vector<std::string>& marketIds, std::optional<PriceProjection> priceProjection,
                                                   std::optional<std::string> orderProjection, std::optional<std::string> matchProjection,
                                                   std::optional<bool> includeOverallPosition, std::optional<bool> partitionMatchedByStrategyRef,
                                                   std::optional<std::vector<std::string>> customerStrategyRefs,
@@ -31,7 +31,7 @@ std::vector<MarketBook> APILoader::listMarketBook(std::vector<std::string> marke
 
     {
         ptree ntree;
-        for (auto s : marketIds) {
+        for (const auto& s : marketIds) {
             ptree child;
             child.put("", s);
             ntree.push_back(std::make_pair("", child));
@@ -86,8 +86,8 @@ std::vector<MarketBook> APILoader::listMarketBook(std::vector<std::string> marke
             "/exchange/betting/json-rpc/v1",
             ss.str(),
             header,
-            [&](std::shared_ptr<HttpsClient::Response> response,
-                const SimpleWeb::error_code &ec)
+            [&](const std::shared_ptr<HttpsClient::Response>& response,
+                const SimpleWeb::error_code)
             {
                 Json::Value root;
                 response->content >> root;
@@ -104,7 +104,7 @@ std::vector<MarketBook> APILoader::listMarketBook(std::vector<std::string> marke
 }
 
 // https://docs.developer.betfair.com/display/1smk3cen4v3lu3yomq5qye0ni/placeOrders
-PlaceExecutionReport APILoader::placeOrders(const std::string& marketId, std::vector<PlaceInstruction> instructions, std::optional<std::string> customerRef,
+PlaceExecutionReport APILoader::placeOrders(const std::string& marketId, const std::vector<PlaceInstruction>& instructions, std::optional<std::string> customerRef,
                                             std::optional<MarketVersion> marketVersion, std::optional<std::string> customerStrategyRef, std::optional<bool> async) {
 
     PlaceExecutionReport result;
@@ -141,8 +141,8 @@ PlaceExecutionReport APILoader::placeOrders(const std::string& marketId, std::ve
             "/exchange/betting/json-rpc/v1",
             ss.str(),
             header,
-            [&](std::shared_ptr<HttpsClient::Response> response,
-                const SimpleWeb::error_code &ec)
+            [&](const std::shared_ptr<HttpsClient::Response>& response,
+                const SimpleWeb::error_code)
             {
                 Json::Value root;
                 response->content >> root;
@@ -191,8 +191,8 @@ std::vector<MarketCatalogue> APILoader::listMarketCatalogue(const MarketFilter& 
             "/exchange/betting/json-rpc/v1",
             ss.str(),
             header,
-            [&](std::shared_ptr<HttpsClient::Response> response,
-                const SimpleWeb::error_code &ec)
+            [&](const std::shared_ptr<HttpsClient::Response>& response,
+                const SimpleWeb::error_code)
             {
                 Json::Value root;
                 response->content >> root;
