@@ -12,6 +12,50 @@
 using boost::property_tree::ptree;
 using HttpsClient = SimpleWeb::Client<SimpleWeb::HTTPS>;
 
+UpdateExecutionReport APILoader::updateOrders(std::string marketId, std::forward_list<UpdateInstruction> instructions,
+                                              std::optional<std::string> customerRef)
+{
+    UpdateExecutionReport result{};
+    ptree tree;
+    tree.put("id", "1");
+    tree.put("jsonrpc", "2.0");
+    tree.put("method", "SportsAPING/v1.0/updateOrders");
+    tree.put_child("params", boost::property_tree::ptree());
+
+    tree.get_child("params").put("marketId", marketId);
+    {
+        ptree ntree;
+        for (auto& item : instructions) {
+            ntree.push_back(std::make_pair("",item.ptree()));
+        }
+        tree.get_child("params").put_child("instructions", ntree);
+    }
+    if (customerRef.has_value())
+        tree.get_child("params").put("customerRef", customerRef.value());
+
+    std::string json;
+    std::stringstream ss;
+    boost::property_tree::json_parser::write_json(ss, tree);
+    std::cout << ss.str();
+    client.request(
+            "POST",
+            "/exchange/betting/json-rpc/v1",
+            ss.str(),
+            header,
+            [&](const std::shared_ptr<HttpsClient::Response>& response,
+                const SimpleWeb::error_code)
+            {
+                Json::Value root;
+                response->content >> root;
+                result = UpdateExecutionReport(root["result"]);
+            }
+    );
+    client.io_service->run();
+
+    return result;
+}
+
+
 CancelExecutionReport APILoader::cancelOrders(std::optional<std::string> marketId, std::optional<std::forward_list<CancelInstruction>> instructions, std::optional<std::string> customerRef)
 {
     CancelExecutionReport result{};
@@ -25,7 +69,6 @@ CancelExecutionReport APILoader::cancelOrders(std::optional<std::string> marketI
         tree.get_child("params").put("marketId", marketId.value());
     if (instructions.has_value())
     {
-        //tree.get_child("params").put_child("instructions", boost::property_tree::ptree());
         ptree ntree;
         for (auto& item : instructions.value()) {
             ntree.push_back(std::make_pair("",item.ptree()));
@@ -360,4 +403,5 @@ APILoader::APILoader():
     header.emplace("X-Application", APILoader::applicationId);
     header.emplace("X-Authentication", APILoader::token);
 }
+
 
