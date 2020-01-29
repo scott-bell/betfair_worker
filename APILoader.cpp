@@ -12,6 +12,56 @@
 using boost::property_tree::ptree;
 using HttpsClient = SimpleWeb::Client<SimpleWeb::HTTPS>;
 
+ReplaceExecutionReport APILoader::replaceOrders(std::string marketId, std::forward_list<ReplaceInstruction> instructions,
+                                                std::optional<std::string> customerRef, std::optional<MarketVersion> marketVersion,
+                                                std::optional<bool> async)
+{
+    ReplaceExecutionReport result{};
+    ptree tree;
+    tree.put("id", "1");
+    tree.put("jsonrpc", "2.0");
+    tree.put("method", "SportsAPING/v1.0/replaceOrders");
+    tree.put_child("params", boost::property_tree::ptree());
+
+    tree.get_child("params").put("marketId", marketId);
+    {
+        ptree ntree;
+        for (auto& item : instructions) {
+            ntree.push_back(std::make_pair("",item.ptree()));
+        }
+        tree.get_child("params").put_child("instructions", ntree);
+    }
+    if (customerRef.has_value())
+        tree.get_child("params").put("customerRef", customerRef.value());
+    if (marketVersion.has_value())
+        tree.get_child("params").put_child("marketVersion", marketVersion.value().ptree());
+    if (async.has_value())
+        tree.get_child("params").put("async", async.value());
+
+    std::string json;
+    std::stringstream ss;
+    boost::property_tree::json_parser::write_json(ss, tree);
+    std::cout << ss.str();
+    client.request(
+            "POST",
+            "/exchange/betting/json-rpc/v1",
+            ss.str(),
+            header,
+            [&](const std::shared_ptr<HttpsClient::Response>& response,
+                const SimpleWeb::error_code)
+            {
+                Json::Value root;
+                response->content >> root;
+                result = ReplaceExecutionReport(root["result"]);
+                std::cout << response->content.string() << std::endl;
+            }
+    );
+    client.io_service->run();
+    return result;
+}
+
+
+
 UpdateExecutionReport APILoader::updateOrders(std::string marketId, std::forward_list<UpdateInstruction> instructions,
                                               std::optional<std::string> customerRef)
 {
@@ -308,7 +358,7 @@ PlaceExecutionReport APILoader::placeOrders(const std::string& marketId, const s
     if (customerRef.has_value())
         tree.get_child("params").put("customerRef",customerRef.value());
     if (marketVersion.has_value())
-        tree.get_child("params").put("marketVersion", marketVersion.value().version);
+        tree.get_child("params").put_child("marketVersion", marketVersion.value().ptree());
     if (customerStrategyRef.has_value())
         tree.get_child("params").put("customerStrategyRef",customerStrategyRef.value());
     if (async.has_value())

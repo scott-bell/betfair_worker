@@ -18,6 +18,8 @@
 #include <betting_type/CancelExecutionReport.h>
 #include <betting_type/UpdateInstruction.h>
 #include <betting_type/UpdateExecutionReport.h>
+#include <betting_type/ReplaceInstruction.h>
+#include <betting_type/ReplaceExecutionReport.h>
 
 
 class APILoader {
@@ -40,6 +42,7 @@ public:
                                                             std::optional<int> recordCount);
     CancelExecutionReport               cancelOrders(std::optional<std::string> marketId, std::optional<std::forward_list<CancelInstruction>> instructions, std::optional<std::string> customerRef);
     UpdateExecutionReport               updateOrders(std::string marketId, std::forward_list<UpdateInstruction> instructions, std::optional<std::string> customerRef);
+    ReplaceExecutionReport              replaceOrders(std::string marketId, std::forward_list<ReplaceInstruction> instructions, std::optional<std::string> customerRef, std::optional<MarketVersion> marketVersion, std::optional<bool> async);
     APILoader();
 };
 

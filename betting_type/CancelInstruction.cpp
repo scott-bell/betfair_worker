@@ -6,7 +6,6 @@
 
 #include <utility>
 
-#include <utility>
 
 boost::property_tree::ptree CancelInstruction::ptree() const {
     boost::property_tree::ptree tree;

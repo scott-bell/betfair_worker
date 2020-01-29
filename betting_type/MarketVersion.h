@@ -6,9 +6,11 @@
 #define BETFAIR_WORKER_MARKETVERSION_H
 
 #include <optional>
+#include <boost/property_tree/ptree.hpp>
 
 struct MarketVersion {
     long version;
+    [[nodiscard]] boost::property_tree::ptree ptree() const;
 };
 
 
