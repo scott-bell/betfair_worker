@@ -3,6 +3,7 @@
 //
 
 #include "NavigationLoader.h"
+#include "Authentication.h"
 
 using boost::property_tree::ptree;
 using HttpsClient = SimpleWeb::Client<SimpleWeb::HTTPS>;
@@ -16,14 +17,12 @@ void NavigationLoader::init() {
     m_betfairEventTypes.reserve(100);
 
     HttpsClient client("api.betfair.com:443", true);
-    const std::string applicationId = ".";
-    const std::string token = ".";
 
     SimpleWeb::CaseInsensitiveMultimap header;
     header.emplace("Accept", "application/json");
     header.emplace("Content-type", "application/json");
-    header.emplace("X-Application", applicationId);
-    header.emplace("X-Authentication", token);
+    header.emplace("X-Application", Authentication::applicationId);
+    header.emplace("X-Authentication", Authentication::token);
 
     client.request(
             "POST",

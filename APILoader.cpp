@@ -6,8 +6,11 @@
 #include <betting_type/MarketFilter.h>
 #include <boost/property_tree/json_parser.hpp>
 #include "APILoader.h"
+#include "Authentication.h"
 #include <jsoncpp/json/json.h>
 #include <betting_type/MarketCatalogue.h>
+#include <string>
+#include <betting_type/APINGException.h>
 
 using boost::property_tree::ptree;
 using HttpsClient = SimpleWeb::Client<SimpleWeb::HTTPS>;
@@ -51,9 +54,10 @@ ReplaceExecutionReport APILoader::replaceOrders(std::string marketId, std::forwa
                 const SimpleWeb::error_code)
             {
                 Json::Value root;
-                response->content >> root;
+                if (root.isMember("error")) {
+                    throw APINGException(root["error"]["data"]["APINGException"]);
+                }
                 result = ReplaceExecutionReport(root["result"]);
-                std::cout << response->content.string() << std::endl;
             }
     );
     client.io_service->run();
@@ -97,6 +101,9 @@ UpdateExecutionReport APILoader::updateOrders(std::string marketId, std::forward
             {
                 Json::Value root;
                 response->content >> root;
+                if (root.isMember("error")) {
+                    throw APINGException(root["error"]["data"]["APINGException"]);
+                }
                 result = UpdateExecutionReport(root["result"]);
             }
     );
@@ -142,7 +149,9 @@ CancelExecutionReport APILoader::cancelOrders(std::optional<std::string> marketI
             {
                 Json::Value root;
                 response->content >> root;
-                //std::cout << response->content.string() << std::endl;
+                if (root.isMember("error")) {
+                    throw APINGException(root["error"]["data"]["APINGException"]);
+                }
                 result = CancelExecutionReport(root["result"]);
             }
     );
@@ -239,8 +248,10 @@ CurrentOrderSummaryReport APILoader::listCurrentOrders(std::optional<std::set<st
                 const SimpleWeb::error_code)
             {
                 Json::Value root;
-                //std::cout << response->content.string() << std::endl;
                 response->content >> root;
+                if (root.isMember("error")) {
+                    throw APINGException(root["error"]["data"]["APINGException"]);
+                }
                 result = CurrentOrderSummaryReport(root["result"]);
             }
     );
@@ -330,6 +341,9 @@ std::vector<MarketBook> APILoader::listMarketBook(const std::vector<std::string>
             {
                 Json::Value root;
                 response->content >> root;
+                if (root.isMember("error")) {
+                    throw APINGException(root["error"]["data"]["APINGException"]);
+                }
                 const Json::Value result = root["result"];
                 for (const auto & index : result)
                 {
@@ -385,6 +399,9 @@ PlaceExecutionReport APILoader::placeOrders(const std::string& marketId, const s
             {
                 Json::Value root;
                 response->content >> root;
+                if (root.isMember("error")) {
+                    throw APINGException(root["error"]["data"]["APINGException"]);
+                }
                 result = PlaceExecutionReport(root["result"]);
             }
     );
@@ -434,6 +451,9 @@ std::vector<MarketCatalogue> APILoader::listMarketCatalogue(const MarketFilter& 
             {
                 Json::Value root;
                 response->content >> root;
+                if (root.isMember("error")) {
+                    throw APINGException(root["error"]["data"]["APINGException"]);
+                }
                 const Json::Value result = root["result"];
                 for (const auto & index : result)
                 {
@@ -450,8 +470,8 @@ APILoader::APILoader():
 {
     header.emplace("Accept", "application/json");
     header.emplace("Content-type", "application/json");
-    header.emplace("X-Application", APILoader::applicationId);
-    header.emplace("X-Authentication", APILoader::token);
+    header.emplace("X-Application", Authentication::applicationId);
+    header.emplace("X-Authentication", Authentication::token);
 }
 
 

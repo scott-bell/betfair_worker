@@ -27,8 +27,6 @@ class APILoader {
 
     HttpsClient client;
     SimpleWeb::CaseInsensitiveMultimap header;
-    inline static const std::string applicationId = ".";
-    inline static const std::string token = ".";
 public:
     std::vector<MarketCatalogue>        listMarketCatalogue(const MarketFilter &filter, const std::set<std::string>& marketProjection, const std::string& sort,int maxResults, const std::string& locale);
     PlaceExecutionReport                placeOrders(const std::string& marketId, const std::vector<PlaceInstruction>& instructions, std::optional<std::string> customerRef,std::optional<MarketVersion> marketVersion, std::optional<std::string> customerStrategyRef, std::optional<bool> async);
