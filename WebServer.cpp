@@ -2,6 +2,7 @@
 // Created by scott on 31/01/2020.
 //
 
+#include <jsoncpp/json/json.h>
 #include "WebServer.h"
 #include "Utility.h"
 
@@ -16,20 +17,26 @@ void WebServer::init() {
 
         std::stringstream ss;
         if (item == nullptr) {
-            ss << "Cannot find " << key;
+            Json::Value root;
+            Json::StyledWriter styledWriter;
+            root["success"] = false;
+            root["message"] = "Not found";
+            ss << styledWriter.write(root);
             *response   << "HTTP/1.1 404 Not Found\r\n"
                         << "Content-Length: " << ss.str().length() << "\r\n"
                         << "\r\n"
                         << ss.str();
         } else {
-            ss << item->get_name();
+            Json::Value root;
+            root["success"] = true;
+            root["item"] = item->json();
+            Json::StyledWriter styledWriter;
+            ss << styledWriter.write(root);
             *response   << "HTTP/1.1 200 OK\r\n"
                         << "Content-Length: " << ss.str().length() << "\r\n"
                         << "\r\n"
                         << ss.str();
         }
-
-
     };
 
     std::thread server_thread([&server]() {

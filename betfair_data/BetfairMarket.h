@@ -8,6 +8,7 @@
 
 #include <string>
 #include <optional>
+#include <jsoncpp/json/json.h>
 #include "BetfairObject.h"
 
 class BetfairMarket : public BetfairObject {
@@ -44,6 +45,7 @@ public:
     BetfairMarket(std::string id, std::string exchange_id, std::string market_start_time,
                   std::string market_type, std::optional<int> number_of_winners, std::string name);
     BetfairMarket() = delete;
+    Json::Value json();
     const std::string& get_exchange_id() const;
     const std::string& get_market_start_time() const;
     const std::string& get_market_type() const;
