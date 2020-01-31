@@ -5,7 +5,7 @@
 #include <boost/property_tree/ptree.hpp>
 #include <betting_type/MarketFilter.h>
 #include <boost/property_tree/json_parser.hpp>
-#include "APILoader.h"
+#include "BetfairAPI.h"
 #include "Authentication.h"
 #include <jsoncpp/json/json.h>
 #include <betting_type/MarketCatalogue.h>
@@ -15,9 +15,9 @@
 using boost::property_tree::ptree;
 using HttpsClient = SimpleWeb::Client<SimpleWeb::HTTPS>;
 
-ReplaceExecutionReport APILoader::replaceOrders(std::string marketId, std::forward_list<ReplaceInstruction> instructions,
-                                                std::optional<std::string> customerRef, std::optional<MarketVersion> marketVersion,
-                                                std::optional<bool> async)
+ReplaceExecutionReport BetfairAPI::replaceOrders(std::string marketId, std::forward_list<ReplaceInstruction> instructions,
+                                                 std::optional<std::string> customerRef, std::optional<MarketVersion> marketVersion,
+                                                 std::optional<bool> async)
 {
     ReplaceExecutionReport result{};
     ptree tree;
@@ -66,8 +66,8 @@ ReplaceExecutionReport APILoader::replaceOrders(std::string marketId, std::forwa
 
 
 
-UpdateExecutionReport APILoader::updateOrders(std::string marketId, std::forward_list<UpdateInstruction> instructions,
-                                              std::optional<std::string> customerRef)
+UpdateExecutionReport BetfairAPI::updateOrders(std::string marketId, std::forward_list<UpdateInstruction> instructions,
+                                               std::optional<std::string> customerRef)
 {
     UpdateExecutionReport result{};
     ptree tree;
@@ -113,7 +113,7 @@ UpdateExecutionReport APILoader::updateOrders(std::string marketId, std::forward
 }
 
 
-CancelExecutionReport APILoader::cancelOrders(std::optional<std::string> marketId, std::optional<std::forward_list<CancelInstruction>> instructions, std::optional<std::string> customerRef)
+CancelExecutionReport BetfairAPI::cancelOrders(std::optional<std::string> marketId, std::optional<std::forward_list<CancelInstruction>> instructions, std::optional<std::string> customerRef)
 {
     CancelExecutionReport result{};
     ptree tree;
@@ -164,15 +164,15 @@ CancelExecutionReport APILoader::cancelOrders(std::optional<std::string> marketI
 
 
 
-CurrentOrderSummaryReport APILoader::listCurrentOrders(std::optional<std::set<std::string>> betIds,
-                                                       std::optional<std::set<std::string>> marketIds,
-                                                       std::optional<std::string> orderProjection,
-                                                       std::optional<std::set<std::string>> customerOrderRefs,
-                                                       std::optional<std::set<std::string>> customerStrategyRefs,
-                                                       std::optional<TimeRange> dateRange,
-                                                       std::optional<std::string> orderBy,
-                                                       std::optional<std::string> sortDir,
-                                                       std::optional<int> fromRecord, std::optional<int> recordCount) {
+CurrentOrderSummaryReport BetfairAPI::listCurrentOrders(std::optional<std::set<std::string>> betIds,
+                                                        std::optional<std::set<std::string>> marketIds,
+                                                        std::optional<std::string> orderProjection,
+                                                        std::optional<std::set<std::string>> customerOrderRefs,
+                                                        std::optional<std::set<std::string>> customerStrategyRefs,
+                                                        std::optional<TimeRange> dateRange,
+                                                        std::optional<std::string> orderBy,
+                                                        std::optional<std::string> sortDir,
+                                                        std::optional<int> fromRecord, std::optional<int> recordCount) {
     CurrentOrderSummaryReport result;
 
     ptree tree;
@@ -263,12 +263,12 @@ CurrentOrderSummaryReport APILoader::listCurrentOrders(std::optional<std::set<st
 
 
 
-std::vector<MarketBook> APILoader::listMarketBook(const std::vector<std::string>& marketIds, std::optional<PriceProjection> priceProjection,
-                                                  std::optional<std::string> orderProjection, std::optional<std::string> matchProjection,
-                                                  std::optional<bool> includeOverallPosition, std::optional<bool> partitionMatchedByStrategyRef,
-                                                  std::optional<std::vector<std::string>> customerStrategyRefs,
-                                                  std::optional<std::string> currencyCode, std::optional<std::string> locale,
-                                                  std::optional<std::string> matchedSince, std::optional<std::vector<std::string>> betIds)
+std::vector<MarketBook> BetfairAPI::listMarketBook(const std::vector<std::string>& marketIds, std::optional<PriceProjection> priceProjection,
+                                                   std::optional<std::string> orderProjection, std::optional<std::string> matchProjection,
+                                                   std::optional<bool> includeOverallPosition, std::optional<bool> partitionMatchedByStrategyRef,
+                                                   std::optional<std::vector<std::string>> customerStrategyRefs,
+                                                   std::optional<std::string> currencyCode, std::optional<std::string> locale,
+                                                   std::optional<std::string> matchedSince, std::optional<std::vector<std::string>> betIds)
 {
 
     std::vector<MarketBook> items;
@@ -357,8 +357,8 @@ std::vector<MarketBook> APILoader::listMarketBook(const std::vector<std::string>
 }
 
 // https://docs.developer.betfair.com/display/1smk3cen4v3lu3yomq5qye0ni/placeOrders
-PlaceExecutionReport APILoader::placeOrders(const std::string& marketId, const std::vector<PlaceInstruction>& instructions, std::optional<std::string> customerRef,
-                                            std::optional<MarketVersion> marketVersion, std::optional<std::string> customerStrategyRef, std::optional<bool> async) {
+PlaceExecutionReport BetfairAPI::placeOrders(const std::string& marketId, const std::vector<PlaceInstruction>& instructions, std::optional<std::string> customerRef,
+                                             std::optional<MarketVersion> marketVersion, std::optional<std::string> customerStrategyRef, std::optional<bool> async) {
 
     PlaceExecutionReport result;
 
@@ -414,7 +414,7 @@ PlaceExecutionReport APILoader::placeOrders(const std::string& marketId, const s
 
 
 
-std::vector<MarketCatalogue> APILoader::listMarketCatalogue(const MarketFilter& filter, const std::set<std::string>& marketProjection, const std::string& sort, int maxResults, const std::string& locale) {
+std::vector<MarketCatalogue> BetfairAPI::listMarketCatalogue(const MarketFilter& filter, const std::set<std::string>& marketProjection, const std::string& sort, int maxResults, const std::string& locale) {
 
     std::vector<MarketCatalogue> items;
 
@@ -465,7 +465,7 @@ std::vector<MarketCatalogue> APILoader::listMarketCatalogue(const MarketFilter& 
     return items;
 }
 
-APILoader::APILoader():
+BetfairAPI::BetfairAPI():
         client("api.betfair.com:443", true)
 {
     header.emplace("Accept", "application/json");

@@ -2,8 +2,8 @@
 // Created by scott on 22/01/2020.
 //
 
-#ifndef BETFAIR_WORKER_APILOADER_H
-#define BETFAIR_WORKER_APILOADER_H
+#ifndef BETFAIR_WORKER_BETFAIRAPI_H
+#define BETFAIR_WORKER_BETFAIRAPI_H
 
 #include <3rd-party/SimpleWeb/client_https.hpp>
 #include <betting_type/MarketCatalogue.h>
@@ -22,7 +22,7 @@
 #include <betting_type/ReplaceExecutionReport.h>
 
 
-class APILoader {
+class BetfairAPI {
     using HttpsClient = SimpleWeb::Client<SimpleWeb::HTTPS>;
 
     HttpsClient client;
@@ -41,8 +41,8 @@ public:
     CancelExecutionReport               cancelOrders(std::optional<std::string> marketId, std::optional<std::forward_list<CancelInstruction>> instructions, std::optional<std::string> customerRef);
     UpdateExecutionReport               updateOrders(std::string marketId, std::forward_list<UpdateInstruction> instructions, std::optional<std::string> customerRef);
     ReplaceExecutionReport              replaceOrders(std::string marketId, std::forward_list<ReplaceInstruction> instructions, std::optional<std::string> customerRef, std::optional<MarketVersion> marketVersion, std::optional<bool> async);
-    APILoader();
+    BetfairAPI();
 };
 
 
-#endif //BETFAIR_WORKER_APILOADER_H
+#endif //BETFAIR_WORKER_BETFAIRAPI_H

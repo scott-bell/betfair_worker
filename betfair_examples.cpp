@@ -5,17 +5,19 @@
 #include <betting_type/MarketFilter.h>
 #include "NavigationLoader.h"
 #include "BetfairData.h"
-#include "APILoader.h"
+#include "BetfairAPI.h"
+#include "WebServer.h"
 #include <betting_type/MarketCatalogue.h>
 
 int main() {
 
     BetfairData bd;
     NavigationLoader nl(bd);
-    APILoader api;
-    
-    std::cout << "Finished" << std::endl;
+    BetfairAPI api;
+    nl.init();
 
+    WebServer ws(bd);
+    ws.init();
 
     return 0;
 }
