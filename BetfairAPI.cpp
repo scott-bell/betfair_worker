@@ -54,6 +54,7 @@ ReplaceExecutionReport BetfairAPI::replaceOrders(std::string marketId, std::forw
                 const SimpleWeb::error_code)
             {
                 Json::Value root;
+                response->content >> root;
                 if (root.isMember("error")) {
                     throw APINGException(root["error"]["data"]["APINGException"]);
                 }
@@ -263,7 +264,7 @@ CurrentOrderSummaryReport BetfairAPI::listCurrentOrders(std::optional<std::set<s
 
 
 
-std::vector<MarketBook> BetfairAPI::listMarketBook(const std::vector<std::string>& marketIds, std::optional<PriceProjection> priceProjection,
+std::forward_list<MarketBook> BetfairAPI::listMarketBook(const std::forward_list<std::string>& marketIds, std::optional<PriceProjection> priceProjection,
                                                    std::optional<std::string> orderProjection, std::optional<std::string> matchProjection,
                                                    std::optional<bool> includeOverallPosition, std::optional<bool> partitionMatchedByStrategyRef,
                                                    std::optional<std::vector<std::string>> customerStrategyRefs,
@@ -271,7 +272,7 @@ std::vector<MarketBook> BetfairAPI::listMarketBook(const std::vector<std::string
                                                    std::optional<std::string> matchedSince, std::optional<std::vector<std::string>> betIds)
 {
 
-    std::vector<MarketBook> items;
+    std::forward_list<MarketBook> items;
 
     ptree tree;
     tree.put("id", "1");
@@ -331,6 +332,7 @@ std::vector<MarketBook> BetfairAPI::listMarketBook(const std::vector<std::string
     boost::property_tree::json_parser::write_json(ss, tree);
     std::cout << ss.str();
 
+    client.io_service->reset();
     client.request(
             "POST",
             "/exchange/betting/json-rpc/v1",
@@ -347,7 +349,7 @@ std::vector<MarketBook> BetfairAPI::listMarketBook(const std::vector<std::string
                 const Json::Value result = root["result"];
                 for (const auto & index : result)
                 {
-                    items.emplace_back(MarketBook(index));
+                    items.emplace_front(MarketBook(index));
                 }
             }
     );
@@ -414,9 +416,9 @@ PlaceExecutionReport BetfairAPI::placeOrders(const std::string& marketId, const 
 
 
 
-std::vector<MarketCatalogue> BetfairAPI::listMarketCatalogue(const MarketFilter& filter, const std::set<std::string>& marketProjection, const std::string& sort, int maxResults, const std::string& locale) {
+std::forward_list<MarketCatalogue> BetfairAPI::listMarketCatalogue(const MarketFilter& filter, const std::set<std::string>& marketProjection, const std::string& sort, int maxResults, const std::string& locale) {
 
-    std::vector<MarketCatalogue> items;
+    std::forward_list<MarketCatalogue> items;
 
     ptree tree;
     tree.put("id", "1");
@@ -457,7 +459,7 @@ std::vector<MarketCatalogue> BetfairAPI::listMarketCatalogue(const MarketFilter&
                 const Json::Value result = root["result"];
                 for (const auto & index : result)
                 {
-                    items.emplace_back(MarketCatalogue(index));
+                    items.emplace_front(MarketCatalogue(index));
                 }
             }
     );

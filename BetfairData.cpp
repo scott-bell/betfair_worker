@@ -22,7 +22,7 @@ BetfairGroup &BetfairData::addGroup(const std::string &id, std::string name) {
 
 
 BetfairMarket &BetfairData::addMarket(const std::string &id, std::string exchange_id, std::string market_start_time,
-                                      std::string market_type, std::optional<int> number_of_winners, std::string name) {
+                                      std::string market_type, int number_of_winners, std::string name) {
     auto item = m_betfairMarkets.emplace(id, BetfairMarket(id,std::move(exchange_id), std::move(market_start_time), std::move(market_type), number_of_winners, name));
     return item.first->second;
 }
@@ -131,7 +131,7 @@ int BetfairData::displayGroup(const BetfairGroup* item) const {
 }
 int BetfairData::displayMarket(const BetfairMarket* item) const {
     if (m_verbose)
-        std::cout << '<' << item->get_name() << ' ' << item->get_id() << std::endl;
+        std::cout << '<' << item->name() << ' ' << item->get_id() << std::endl;
     return 1;
 }
 int BetfairData::displayRace(const BetfairRace* item) const {

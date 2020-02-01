@@ -41,6 +41,7 @@ void WebServer::init() {
 
     std::thread server_thread([&server]() {
         // Start server
+        std::cout << "Starting WebServer" << std::endl;
         server.start();
     });
 

@@ -145,12 +145,12 @@ void NavigationLoader::importGroup(const BetfairGroup* item, int indent, T& pare
 template <typename T>
 void NavigationLoader::importMarket(const BetfairMarket* item, int indent, T& parent) {
     if (verbose)
-        std::cout << std::string(indent,' ') << '<' << item->get_name() << "> " << item->get_id() << std::endl;
+        std::cout << std::string(indent,' ') << '<' << item->name() << "> " << item->get_id() << std::endl;
     BetfairMarket* p_item = m_betfair_data.getBetfairMarket(item->get_id());
     if (p_item == nullptr) {
         p_item = &(m_betfair_data.addMarket(
-                item->get_id(), item->get_exchange_id(), item->get_market_start_time(), item->get_market_type(),
-                item->get_number_of_winners(), item->get_name()
+                item->get_id(), item->exchangeId(), item->startTime(), item->marketType(),
+                item->numberOfWinners(), item->name()
         ));
         parent->addChild(p_item);
     } else {

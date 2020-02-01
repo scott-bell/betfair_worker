@@ -23,7 +23,7 @@ struct MarketDescription {
     std::string marketType;
     std::string regulator;
     double marketBaseRate;
-    double discountAllowed;
+    bool discountAllowed;
     std::optional<std::string> wallet;
     std::optional<std::string> rules;
     std::optional<bool> rulesHasDate;

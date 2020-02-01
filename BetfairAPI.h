@@ -20,6 +20,8 @@
 #include <betting_type/UpdateExecutionReport.h>
 #include <betting_type/ReplaceInstruction.h>
 #include <betting_type/ReplaceExecutionReport.h>
+#include <betting_type/MarketFilter.h>
+#include <set>
 
 
 class BetfairAPI {
@@ -28,9 +30,9 @@ class BetfairAPI {
     HttpsClient client;
     SimpleWeb::CaseInsensitiveMultimap header;
 public:
-    std::vector<MarketCatalogue>        listMarketCatalogue(const MarketFilter &filter, const std::set<std::string>& marketProjection, const std::string& sort,int maxResults, const std::string& locale);
+    std::forward_list<MarketCatalogue>  listMarketCatalogue(const MarketFilter &filter, const std::set<std::string>& marketProjection, const std::string& sort,int maxResults, const std::string& locale);
     PlaceExecutionReport                placeOrders(const std::string& marketId, const std::vector<PlaceInstruction>& instructions, std::optional<std::string> customerRef,std::optional<MarketVersion> marketVersion, std::optional<std::string> customerStrategyRef, std::optional<bool> async);
-    std::vector<MarketBook>             listMarketBook(const std::vector<std::string>& marketIds, std::optional<PriceProjection> priceProjection, std::optional<std::string> orderProjection, std::optional<std::string> matchProjection, std::optional<bool> includeOverallPosition, std::optional<bool> partitionMatchedByStrategyRef, std::optional<std::vector<std::string>> customerStrategyRefs, std::optional<std::string> currencyCode, std::optional<std::string> locale, std::optional<std::string> matchedSince, std::optional<std::vector<std::string>> betIds);
+    std::forward_list<MarketBook>       listMarketBook(const std::forward_list<std::string>& marketIds, std::optional<PriceProjection> priceProjection = std::nullopt, std::optional<std::string> orderProjection = std::nullopt, std::optional<std::string> matchProjection = std::nullopt, std::optional<bool> includeOverallPosition = std::nullopt, std::optional<bool> partitionMatchedByStrategyRef = std::nullopt, std::optional<std::vector<std::string>> customerStrategyRefs = std::nullopt, std::optional<std::string> currencyCode = std::nullopt, std::optional<std::string> locale = std::nullopt, std::optional<std::string> matchedSince = std::nullopt, std::optional<std::vector<std::string>> betIds = std::nullopt);
     CurrentOrderSummaryReport           listCurrentOrders(std::optional<std::set<std::string>> betIds, std::optional<std::set<std::string>> marketIds,
                                                             std::optional<std::string> orderProjection,
                                                             std::optional<std::set<std::string>> customerOrderRefs,

@@ -7,6 +7,7 @@
 #include "BetfairData.h"
 #include "BetfairAPI.h"
 #include "WebServer.h"
+#include "TaskManager.h"
 #include <betting_type/MarketCatalogue.h>
 
 int main() {
@@ -15,6 +16,10 @@ int main() {
     NavigationLoader nl(bd);
     BetfairAPI api;
     nl.init();
+
+    TaskManager tm(bd,api);
+    tm.init();
+
 
     WebServer ws(bd);
     ws.init();
