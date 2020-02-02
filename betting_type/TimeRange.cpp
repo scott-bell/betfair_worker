@@ -4,11 +4,11 @@
 
 #include "TimeRange.h"
 
-boost::property_tree::ptree TimeRange::ptree() const {
-    boost::property_tree::ptree tree;
+Json::Value TimeRange::json() const {
+    Json::Value json;
     if (from.has_value())
-        tree.put("from", from.value());
+        json["from"] = from.value();
     if (to.has_value())
-        tree.put("to", to.value());
-    return tree;
+        json["to"] = to.value();
+    return json;
 }

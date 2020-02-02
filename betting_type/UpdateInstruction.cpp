@@ -4,15 +4,12 @@
 
 #include "UpdateInstruction.h"
 
-boost::property_tree::ptree UpdateInstruction::ptree() const {
-    boost::property_tree::ptree tree;
-
-    tree.put("betId",betId);
-    tree.put("newPersistenceType",newPersistenceType);
-
-    return tree;
+Json::Value UpdateInstruction::json() const {
+    Json::Value json;
+    json["betId"]=betId;
+    json["newPersistenceType"]=newPersistenceType;
+    return json;
 }
-
 UpdateInstruction::UpdateInstruction(Json::Value json) {
     if (json.isMember("betId"))
         betId = json["betId"].asString();
@@ -25,3 +22,4 @@ UpdateInstruction::UpdateInstruction(std::string betId, std::string newPersisten
 {
 
 }
+

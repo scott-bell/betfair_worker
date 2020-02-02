@@ -7,7 +7,7 @@
 
 
 #include <string>
-#include <boost/property_tree/ptree.hpp>
+#include <jsoncpp/json/json.h>
 
 struct ExBestOffersOverrides {
     std::optional<int> bestPricesDepth;
@@ -16,7 +16,7 @@ struct ExBestOffersOverrides {
     std::optional<double> rollupLiabilityThreshold;
     std::optional<int> rollupLiabilityFactor;
 
-    [[nodiscard]] boost::property_tree::ptree ptree() const;
+    [[nodiscard]] Json::Value json() const;
 
 };
 

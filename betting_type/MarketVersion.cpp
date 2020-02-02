@@ -4,10 +4,8 @@
 
 #include "MarketVersion.h"
 
-boost::property_tree::ptree MarketVersion::ptree() const {
-    boost::property_tree::ptree tree;
-
-    tree.put("version",version);
-
-    return tree;
+Json::Value MarketVersion::json() const {
+    Json::Value json;
+    json["version"] = std::to_string(version);
+    return json;
 }

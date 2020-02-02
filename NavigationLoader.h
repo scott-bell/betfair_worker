@@ -6,8 +6,6 @@
 #define BETFAIR_WORKER_NAVIGATIONLOADER_H
 
 #include <3rd-party/SimpleWeb/client_https.hpp>
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/json_parser.hpp>
 #include <chrono>
 #include <betfair_data/BetfairMarket.h>
 #include <betfair_data/BetfairEventType.h>
@@ -37,16 +35,16 @@ class NavigationLoader {
     void importMarket(const BetfairMarket* item, int indent, T& parent);
     template <typename T>
     void importRace(const BetfairRace* item, int indent, T& parent);
-    void processJSONRoot(const boost::property_tree::ptree& parseTree);
-    void processJSONEventType(const boost::property_tree::ptree& parseTree);
+    void processJSONRoot(const Json::Value& json);
+    void processJSONEventType(const Json::Value& json);
     template <typename T>
-    void processJSONEvent(const boost::property_tree::ptree& parseTree, T& parent);
+    void processJSONEvent(const Json::Value& json, T& parent);
     template <typename T>
-    void processJSONGroup(const boost::property_tree::ptree& parseTree, T& parent);
+    void processJSONGroup(const Json::Value& json, T& parent);
     template <typename T>
-    void processJSONMarket(const boost::property_tree::ptree& parseTree, T& parent);
+    void processJSONMarket(const Json::Value& json, T& parent);
     template <typename T>
-    void processJSONRace(const boost::property_tree::ptree& parseTree, T& parent);
+    void processJSONRace(const Json::Value& json, T& parent);
 public:
     explicit NavigationLoader(BetfairData& betfair_data);
     void init();

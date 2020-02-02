@@ -7,13 +7,12 @@
 
 #include <string>
 #include <jsoncpp/json/json.h>
-#include <boost/property_tree/ptree.hpp>
 
 struct ReplaceInstruction {
     std::string betId;
     double newPrice;
     ReplaceInstruction(std::string betId, double newPrice);
-    [[nodiscard]] boost::property_tree::ptree ptree() const;
+    [[nodiscard]] Json::Value json() const;
     explicit ReplaceInstruction(Json::Value json);
 };
 

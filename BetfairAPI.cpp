@@ -2,7 +2,6 @@
 // Created by scott on 22/01/2020.
 //
 
-#include <boost/property_tree/ptree.hpp>
 #include <betting_type/MarketFilter.h>
 #include <boost/property_tree/json_parser.hpp>
 #include "BetfairAPI.h"
@@ -12,39 +11,45 @@
 #include <string>
 #include <betting_type/APINGException.h>
 
-using boost::property_tree::ptree;
 using HttpsClient = SimpleWeb::Client<SimpleWeb::HTTPS>;
 
-ReplaceExecutionReport BetfairAPI::replaceOrders(std::string marketId, std::forward_list<ReplaceInstruction> instructions,
+ReplaceExecutionReport BetfairAPI::replaceOrders(const std::string& marketId, std::forward_list<ReplaceInstruction> instructions,
                                                  std::optional<std::string> customerRef, std::optional<MarketVersion> marketVersion,
                                                  std::optional<bool> async)
 {
     ReplaceExecutionReport result{};
-    ptree tree;
-    tree.put("id", "1");
-    tree.put("jsonrpc", "2.0");
-    tree.put("method", "SportsAPING/v1.0/replaceOrders");
-    tree.put_child("params", boost::property_tree::ptree());
 
-    tree.get_child("params").put("marketId", marketId);
+    Json::Value json;
+    json["id"] = 1;
+    json["jsonrpc"] = "2.0";
+    json["method"] = "SportsAPING/v1.0/replaceOrders";
+
+    Json::Value jsonParams;
+
+    jsonParams["marketId"] = marketId;
     {
-        ptree ntree;
-        for (auto& item : instructions) {
-            ntree.push_back(std::make_pair("",item.ptree()));
+        Json::Value nested;
+        for (const auto& s : instructions) {
+            nested.append(s.json());
         }
-        tree.get_child("params").put_child("instructions", ntree);
+        jsonParams["instructions"] = nested;
     }
-    if (customerRef.has_value())
-        tree.get_child("params").put("customerRef", customerRef.value());
-    if (marketVersion.has_value())
-        tree.get_child("params").put_child("marketVersion", marketVersion.value().ptree());
-    if (async.has_value())
-        tree.get_child("params").put("async", async.value());
 
-    std::string json;
+    if (customerRef.has_value())
+        jsonParams["customerRef"] = customerRef.value();
+    if (marketVersion.has_value())
+        jsonParams["marketVersion"] = marketVersion.value().json();
+    if (async.has_value())
+        jsonParams["async"] = async.value();
+
+
+    json["params"] = jsonParams;
+
+    Json::StyledWriter styledWriter;
     std::stringstream ss;
-    boost::property_tree::json_parser::write_json(ss, tree);
+    ss << styledWriter.write(json);
     std::cout << ss.str();
+
     client.request(
             "POST",
             "/exchange/betting/json-rpc/v1",
@@ -71,27 +76,31 @@ UpdateExecutionReport BetfairAPI::updateOrders(std::string marketId, std::forwar
                                                std::optional<std::string> customerRef)
 {
     UpdateExecutionReport result{};
-    ptree tree;
-    tree.put("id", "1");
-    tree.put("jsonrpc", "2.0");
-    tree.put("method", "SportsAPING/v1.0/updateOrders");
-    tree.put_child("params", boost::property_tree::ptree());
+    Json::Value json;
+    json["id"] = 1;
+    json["jsonrpc"] = "2.0";
+    json["method"] = "SportsAPING/v1.0/updateOrders";
 
-    tree.get_child("params").put("marketId", marketId);
+    Json::Value jsonParams;
+
+    jsonParams["marketId"] = marketId;
     {
-        ptree ntree;
+        Json::Value nested;
         for (auto& item : instructions) {
-            ntree.push_back(std::make_pair("",item.ptree()));
+            nested.append(item.json());
         }
-        tree.get_child("params").put_child("instructions", ntree);
+        jsonParams["instructions"]=nested;
     }
     if (customerRef.has_value())
-        tree.get_child("params").put("customerRef", customerRef.value());
+        jsonParams["customerRef"]=customerRef.value();
 
-    std::string json;
+    json["params"] = jsonParams;
+
+    Json::StyledWriter styledWriter;
     std::stringstream ss;
-    boost::property_tree::json_parser::write_json(ss, tree);
+    ss << styledWriter.write(json);
     std::cout << ss.str();
+
     client.request(
             "POST",
             "/exchange/betting/json-rpc/v1",
@@ -117,29 +126,33 @@ UpdateExecutionReport BetfairAPI::updateOrders(std::string marketId, std::forwar
 CancelExecutionReport BetfairAPI::cancelOrders(std::optional<std::string> marketId, std::optional<std::forward_list<CancelInstruction>> instructions, std::optional<std::string> customerRef)
 {
     CancelExecutionReport result{};
-    ptree tree;
-    tree.put("id", "1");
-    tree.put("jsonrpc", "2.0");
-    tree.put("method", "SportsAPING/v1.0/cancelOrders");
-    tree.put_child("params", boost::property_tree::ptree());
+    Json::Value json;
+    json["id"] = 1;
+    json["jsonrpc"] = "2.0";
+    json["method"] = "SportsAPING/v1.0/cancelOrders";
+
+    Json::Value jsonParams;
 
     if (marketId.has_value())
-        tree.get_child("params").put("marketId", marketId.value());
+        jsonParams["marketId"] = marketId.value();
     if (instructions.has_value())
     {
-        ptree ntree;
+        Json::Value nested;
         for (auto& item : instructions.value()) {
-            ntree.push_back(std::make_pair("",item.ptree()));
+            nested.append(item.json());
         }
-        tree.get_child("params").put_child("instructions", ntree);
+        jsonParams["instructions"] = nested;
     }
     if (customerRef.has_value())
-        tree.get_child("params").put("customerRef", customerRef.value());
+        jsonParams["customerRef"] = customerRef.value();
 
-    std::string json;
+    json["params"] = jsonParams;
+
+    Json::StyledWriter styledWriter;
     std::stringstream ss;
-    boost::property_tree::json_parser::write_json(ss, tree);
+    ss << styledWriter.write(json);
     std::cout << ss.str();
+
     client.request(
             "POST",
             "/exchange/betting/json-rpc/v1",
@@ -176,68 +189,63 @@ CurrentOrderSummaryReport BetfairAPI::listCurrentOrders(std::optional<std::set<s
                                                         std::optional<int> fromRecord, std::optional<int> recordCount) {
     CurrentOrderSummaryReport result;
 
-    ptree tree;
-    tree.put("id", "1");
-    tree.put("jsonrpc", "2.0");
-    tree.put("method", "SportsAPING/v1.0/listCurrentOrders");
-    tree.put_child("params", boost::property_tree::ptree());
+    Json::Value json;
+    json["id"] = 1;
+    json["jsonrpc"] = "2.0";
+    json["method"] = "SportsAPING/v1.0/listCurrentOrders";
+
+    Json::Value jsonParams;
 
     if (betIds.has_value())
     {
-        ptree ntree;
+        Json::Value nested;
         for (const auto& s : betIds.value()) {
-            ptree child;
-            child.put("", s);
-            ntree.push_back(std::make_pair("", child));
+            nested.append(s);
         }
-        tree.get_child("params").put_child("betIds", ntree);
+        jsonParams["betIds"] = nested;
     }
     if (marketIds.has_value())
     {
-        ptree ntree;
+        Json::Value nested;
         for (const auto& s : marketIds.value()) {
-            ptree child;
-            child.put("", s);
-            ntree.push_back(std::make_pair("", child));
+            nested.append(s);
         }
-        tree.get_child("params").put_child("marketIds", ntree);
+        jsonParams["marketIds"] = nested;
     }
     if (orderProjection.has_value())
-        tree.get_child("params").put("orderProjection", orderProjection.value());
+        jsonParams["orderProjection"] = orderProjection.value();
     if (customerOrderRefs.has_value())
     {
-        ptree ntree;
+        Json::Value nested;
         for (const auto& s : customerOrderRefs.value()) {
-            ptree child;
-            child.put("", s);
-            ntree.push_back(std::make_pair("", child));
+            nested.append(s);
         }
-        tree.get_child("params").put_child("customerOrderRefs", ntree);
+        jsonParams["customerOrderRefs"]= nested;
     }
     if (customerStrategyRefs.has_value())
     {
-        ptree ntree;
+        Json::Value nested;
         for (const auto& s : customerStrategyRefs.value()) {
-            ptree child;
-            child.put("", s);
-            ntree.push_back(std::make_pair("", child));
+            nested.append(s);
         }
-        tree.get_child("params").put_child("customerStrategyRefs", ntree);
+        jsonParams["customerStrategyRefs"]= nested;
     }
     if (dateRange.has_value())
-        tree.get_child("params").put_child("dateRange", dateRange.value().ptree());
+        jsonParams["dateRange"] = dateRange.value().json();
     if (orderBy.has_value())
-        tree.get_child("params").put("orderBy", orderBy.value());
+        jsonParams["orderBy"] = orderBy.value();
     if (sortDir.has_value())
-        tree.get_child("params").put("sortDir", sortDir.value());
+        jsonParams["sortDir"] = sortDir.value();
     if (fromRecord.has_value())
-        tree.get_child("params").put("fromRecord", fromRecord.value());
+        jsonParams["fromRecord"] = fromRecord.value();
     if (recordCount.has_value())
-        tree.get_child("params").put("recordCount", recordCount.value());
+        jsonParams["recordCount"] = recordCount.value();
 
-    std::string json;
+    json["params"] = jsonParams;
+
+    Json::StyledWriter styledWriter;
     std::stringstream ss;
-    boost::property_tree::json_parser::write_json(ss, tree);
+    ss << styledWriter.write(json);
     std::cout << ss.str();
 
     client.request(
@@ -271,66 +279,60 @@ std::forward_list<MarketBook> BetfairAPI::listMarketBook(const std::forward_list
                                                    std::optional<std::string> currencyCode, std::optional<std::string> locale,
                                                    std::optional<std::string> matchedSince, std::optional<std::vector<std::string>> betIds)
 {
-
     std::forward_list<MarketBook> items;
 
-    ptree tree;
-    tree.put("id", "1");
-    tree.put("jsonrpc", "2.0");
-    tree.put("method", "SportsAPING/v1.0/listMarketBook");
-    tree.put_child("params", boost::property_tree::ptree());
+    Json::Value json;
+    json["id"] = 1;
+    json["jsonrpc"] = "2.0";
+    json["method"] = "SportsAPING/v1.0/listMarketBook";
+
+    Json::Value jsonParams;
 
     {
-        ptree ntree;
+        Json::Value jsonMarkets;
         for (const auto& s : marketIds) {
-            ptree child;
-            child.put("", s);
-            ntree.push_back(std::make_pair("", child));
+            jsonMarkets.append(s);
         }
-        tree.get_child("params").put_child("marketIds", ntree);
+        jsonParams["marketIds"] = jsonMarkets;
     }
+
     if (priceProjection.has_value())
-        tree.get_child("params").put_child("priceProjection", priceProjection.value().ptree());
+        jsonParams["priceProjection"] = priceProjection.value().json();
     if (orderProjection.has_value())
-        tree.get_child("params").put("orderProjection", orderProjection.value());
+        jsonParams["orderProjection"] = orderProjection.value();
     if (matchProjection.has_value())
-        tree.get_child("params").put("matchProjection", matchProjection.value());
+        jsonParams["matchProjection"] = matchProjection.value();
     if (includeOverallPosition.has_value())
-        tree.get_child("params").put("includeOverallPosition", includeOverallPosition.value());
+        jsonParams["includeOverallPosition"] = includeOverallPosition.value();
     if (partitionMatchedByStrategyRef.has_value())
-        tree.get_child("params").put("partitionMatchedByStrategyRef", partitionMatchedByStrategyRef.value());
+        jsonParams["partitionMatchedByStrategyRef"] = partitionMatchedByStrategyRef.value();
     if (customerStrategyRefs.has_value()) {
-        ptree ntree;
+        Json::Value nested;
         for (auto s : customerStrategyRefs.value()) {
-            ptree child;
-            child.put("", s);
-            ntree.push_back(std::make_pair("", child));
+            nested.append(s);
         }
-        tree.get_child("params").put_child("customerStrategyRefs", ntree);
+        jsonParams["customerStrategyRefs"] = nested;
     }
     if (currencyCode.has_value())
-        tree.get_child("params").put("currencyCode", currencyCode.value());
+        jsonParams["currencyCode"] = currencyCode.value();
     if (locale.has_value())
-        tree.get_child("params").put("locale", locale.value());
+        jsonParams["locale"] = locale.value();
     if (matchedSince.has_value())
-        tree.get_child("params").put("matchedSince", matchedSince.value());
-    if (matchedSince.has_value())
-        tree.get_child("params").put("matchedSince", matchedSince.value());
+        jsonParams["matchedSince"] = matchedSince.value();
     if (betIds.has_value()) {
-        ptree ntree;
+        Json::Value nested;
         for (auto s : betIds.value()) {
-            ptree child;
-            child.put("", s);
-            ntree.push_back(std::make_pair("", child));
+            nested.append(s);
         }
-        tree.get_child("params").put_child("betIds", ntree);
+        jsonParams["betIds"] = nested;
     }
 
+    json["params"] = jsonParams;
 
-    std::string json;
+    Json::StyledWriter styledWriter;
     std::stringstream ss;
-    boost::property_tree::json_parser::write_json(ss, tree);
-    std::cout << ss.str();
+    ss << styledWriter.write(json);
+    std::cout << ss.str() << std::endl;
 
     client.io_service->reset();
     client.request(
@@ -344,7 +346,12 @@ std::forward_list<MarketBook> BetfairAPI::listMarketBook(const std::forward_list
                 Json::Value root;
                 response->content >> root;
                 if (root.isMember("error")) {
-                    throw APINGException(root["error"]["data"]["APINGException"]);
+                    if ((root["error"].isMember("data")) && (root["error"]["data"].isMember("APINGException"))) {
+                        throw APINGException(root["error"]["data"]["APINGException"]);
+                    } else {
+                        std::string err = root["error"]["code"].asString() + " " + root["error"]["message"].asCString();
+                        throw std::runtime_error(err);
+                    }
                 }
                 const Json::Value result = root["result"];
                 for (const auto & index : result)
@@ -364,31 +371,39 @@ PlaceExecutionReport BetfairAPI::placeOrders(const std::string& marketId, const 
 
     PlaceExecutionReport result;
 
-    ptree tree;
-    tree.put("id", "1");
-    tree.put("jsonrpc", "2.0");
-    tree.put("method", "SportsAPING/v1.0/placeOrders");
-    tree.put_child("params", boost::property_tree::ptree());
-    tree.get_child("params").put("marketId",marketId);
-    tree.get_child("params").put_child("instructions", boost::property_tree::ptree());
+    Json::Value json;
+    json["id"] = 1;
+    json["jsonrpc"] = "2.0";
+    json["method"] = "SportsAPING/v1.0/placeOrders";
+
+    Json::Value jsonParams;
+
+
+
+    jsonParams["marketId"]=marketId;
     if (customerRef.has_value())
-        tree.get_child("params").put("customerRef",customerRef.value());
+        jsonParams["customerRef"]=customerRef.value();
     if (marketVersion.has_value())
-        tree.get_child("params").put_child("marketVersion", marketVersion.value().ptree());
+        jsonParams["marketVersion"]=marketVersion.value().json();
     if (customerStrategyRef.has_value())
-        tree.get_child("params").put("customerStrategyRef",customerStrategyRef.value());
+        jsonParams["customerStrategyRef"]=customerStrategyRef.value();
     if (async.has_value())
-        tree.get_child("params").put("async",async.value());
+        jsonParams["async"]=async.value();
 
+    {
+        Json::Value nested;
+        for (auto &item : instructions) {
+            nested.append(item.json());
+        }
+        jsonParams["instructions"] = nested;
 
-
-    for (auto& item : instructions) {
-        tree.get_child("params").get_child("instructions").push_back(std::make_pair("",item.ptree()));
     }
 
-    std::string json;
+    json["params"] = jsonParams;
+
+    Json::StyledWriter styledWriter;
     std::stringstream ss;
-    boost::property_tree::json_parser::write_json(ss, tree);
+    ss << styledWriter.write(json);
     std::cout << ss.str();
 
     client.request(
@@ -420,27 +435,35 @@ std::forward_list<MarketCatalogue> BetfairAPI::listMarketCatalogue(const MarketF
 
     std::forward_list<MarketCatalogue> items;
 
-    ptree tree;
-    tree.put("id", "1");
-    tree.put("jsonrpc", "2.0");
-    tree.put("method", "SportsAPING/v1.0/listMarketCatalogue");
-    tree.put_child("params", boost::property_tree::ptree());
-    tree.get_child("params").put_child("filter", filter.ptree());
-    tree.get_child("params").put_child("marketProjection", boost::property_tree::ptree());
-    tree.get_child("params").put("sort", sort);
-    tree.get_child("params").put("locale", locale);
+    Json::Value json;
+    json["id"] = "1";
+    json["jsonrpc"] = "2.0";
+    json["method"] = "SportsAPING/v1.0/listMarketCatalogue";
 
-    for (auto& item : marketProjection) {
-        ptree child1;
-        child1.put("",item);
-        tree.get_child("params").get_child("marketProjection").push_back(std::make_pair("",child1));
+    Json::Value jsonParams;
+
+    jsonParams["filter"] = filter.json();
+
+    jsonParams["sort"] = sort;
+    jsonParams["locale"] = locale;
+
+
+    {
+        Json::Value nested;
+        for (auto &s : marketProjection) {
+            nested.append(s);
+        }
+        jsonParams["marketProjection"]= nested;
+
     }
 
-    tree.get_child("params").put("maxResults",maxResults);
+    jsonParams["maxResults"] = maxResults;
 
-    std::string json;
+    json["params"] = jsonParams;
+
+    Json::StyledWriter styledWriter;
     std::stringstream ss;
-    boost::property_tree::json_parser::write_json(ss, tree);
+    ss << styledWriter.write(json);
     std::cout << ss.str();
 
     client.request(
@@ -464,6 +487,7 @@ std::forward_list<MarketCatalogue> BetfairAPI::listMarketCatalogue(const MarketF
             }
     );
     client.io_service->run();
+    client.io_service->stop();
     return items;
 }
 

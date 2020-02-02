@@ -5,13 +5,15 @@
 #include <jsoncpp/json/json.h>
 #include "MarketOnCloseOrder.h"
 
-boost::property_tree::ptree MarketOnCloseOrder::ptree() const {
-    boost::property_tree::ptree tree;
-    tree.put("liability",liability);
-    return tree;
+Json::Value MarketOnCloseOrder::json() const {
+    Json::Value json;
+    json["liability"] = liability;
+    return json;
 }
 
 MarketOnCloseOrder::MarketOnCloseOrder(Json::Value json) {
     liability = json["liability"].asDouble();
 
 }
+
+

@@ -11,7 +11,7 @@
 struct LimitOnCloseOrder {
     double liability;
     double price;
-    [[nodiscard]] boost::property_tree::ptree ptree() const;
+    [[nodiscard]] Json::Value json() const;
     explicit LimitOnCloseOrder(Json::Value json);
 };
 

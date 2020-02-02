@@ -7,13 +7,13 @@
 #include <utility>
 
 
-boost::property_tree::ptree CancelInstruction::ptree() const {
-    boost::property_tree::ptree tree;
+Json::Value CancelInstruction::json() const {
+    Json::Value json;
     if (betId.has_value())
-        tree.put("betId",betId.value());
+        json["betId"] = betId.value();
     if (sizeReduction.has_value())
-        tree.put("sizeReduction",sizeReduction.value());
-    return tree;
+        json["sizeReduction"] = sizeReduction.value();
+    return json;
 }
 
 CancelInstruction::CancelInstruction(Json::Value json) {

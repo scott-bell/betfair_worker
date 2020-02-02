@@ -9,7 +9,6 @@
 #include <optional>
 #include <string>
 #include <jsoncpp/json/json.h>
-#include <boost/property_tree/ptree.hpp>
 #include "ExBestOffersOverrides.h"
 
 struct PriceProjection {
@@ -18,7 +17,8 @@ struct PriceProjection {
     std::optional<bool> virtualise;
     std::optional<bool> rolloverStakes;
 
-    [[nodiscard]] boost::property_tree::ptree ptree() const;
+    [[nodiscard]] Json::Value json() const;
+
 
 };
 

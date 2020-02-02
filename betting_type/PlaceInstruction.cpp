@@ -6,30 +6,23 @@
 
 #include <utility>
 
-boost::property_tree::ptree PlaceInstruction::ptree() const {
-    boost::property_tree::ptree tree;
-
-
-    tree.put("orderType",orderType);
-    tree.put("selectionId",selectionId);
+Json::Value PlaceInstruction::json() const {
+    Json::Value json;
+    json["orderType"]=orderType;
+    json["selectionId"]=std::to_string(selectionId);
     if (handicap.has_value())
-        tree.put("handicap",handicap.value());
-    tree.put("side",side);
+        json["handicap"]=handicap.value();
+    json["side"]=side;
     if (limitOrder.has_value())
-        tree.put_child("limitOrder",limitOrder.value().ptree());
+        json["limitOrder"]=limitOrder.value().json();
     if (limitOnCloseOrder.has_value())
-        tree.put_child("limitOnCloseOrder",limitOnCloseOrder.value().ptree());
+        json["limitOnCloseOrder"]=limitOnCloseOrder.value().json();
     if (marketOnCloseOrder.has_value())
-        tree.put_child("marketOnCloseOrder",marketOnCloseOrder.value().ptree());
+        json["marketOnCloseOrder"]=marketOnCloseOrder.value().json();
     if (customerOrderRef.has_value())
-        tree.put("customerOrderRef",customerOrderRef.value());
-
-
-
-
-    return tree;
+        json["customerOrderRef"]=customerOrderRef.value();
+    return json;
 }
-
 PlaceInstruction::PlaceInstruction(Json::Value json) {
     orderType = json["orderType"].asString();
     selectionId = json["selectionId"].asInt();
@@ -56,4 +49,5 @@ PlaceInstruction::PlaceInstruction(std::string orderType, long selectionId, std:
 {
 
 }
+
 

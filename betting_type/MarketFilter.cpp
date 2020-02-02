@@ -5,54 +5,46 @@
 #include "MarketFilter.h"
 
 
-boost::property_tree::ptree MarketFilter::setToPtree(std::set<std::string> items) const
+Json::Value MarketFilter::setToJson(std::set<std::string> items) const
 {
-    using boost::property_tree::ptree;
-    ptree tree;
-    for (auto s : items) {
-        ptree child;
-        child.put("", s);
-        tree.push_back(std::make_pair("", child));
+    Json::Value nested;
+    for (const auto& s : items) {
+        nested.append(s);
     }
-    return tree;
+    return nested;
+
 }
 
-boost::property_tree::ptree MarketFilter::ptree() const {
-
-    using boost::property_tree::ptree;
-    ptree tree;
-
-
+Json::Value MarketFilter::json() const {
+    Json::Value json;
     if (m_eventTypeIds.has_value())
-        tree.add_child("eventTypeIds", setToPtree(m_eventTypeIds.value()));
+        json["eventTypeIds"]=setToJson(m_eventTypeIds.value());
     if (m_eventIds.has_value())
-        tree.add_child("eventIds", setToPtree(m_eventIds.value()));
+        json["eventIds"] = setToJson(m_eventIds.value());
     if (m_competitionIds.has_value())
-        tree.add_child("competitionIds", setToPtree(m_competitionIds.value()));
+        json["competitionIds"] = setToJson(m_competitionIds.value());
     if (m_marketIds.has_value())
-        tree.add_child("marketIds", setToPtree(m_marketIds.value()));
+        json["marketIds"] = setToJson(m_marketIds.value());
     if (m_venues.has_value())
-        tree.add_child("venues", setToPtree(m_venues.value()));
+        json["venues"] = setToJson(m_venues.value());
     if (m_bspOnly.has_value())
-        tree.put("bspOnly", m_bspOnly.value());
+        json["bspOnly"] = m_bspOnly.value();
     if (m_turnInPlayEnabled.has_value())
-        tree.put("turnInPlayEnabled", m_turnInPlayEnabled.value());
+        json["turnInPlayEnabled"] = m_turnInPlayEnabled.value();
     if (m_inPlayOnly.has_value())
-        tree.put("inPlayOnly", m_inPlayOnly.value());
+        json["inPlayOnly"] = m_inPlayOnly.value();
     if (m_marketBettingTypes.has_value())
-        tree.add_child("marketBettingTypes", setToPtree(m_marketBettingTypes.value()));
+        json["marketBettingTypes"] = setToJson(m_marketBettingTypes.value());
     if (m_marketCountries.has_value())
-        tree.add_child("marketCountries", setToPtree(m_marketCountries.value()));
+        json["marketCountries"] = setToJson(m_marketCountries.value());
     if (m_marketTypeCodes.has_value())
-        tree.add_child("marketTypeCodes", setToPtree(m_marketTypeCodes.value()));
+        json["marketTypeCodes"] = setToJson(m_marketTypeCodes.value());
     if (m_withOrders.has_value())
-        tree.add_child("withOrders", setToPtree(m_withOrders.value()));
+        json["withOrders"] = setToJson(m_withOrders.value());
     if (m_raceTypes.has_value())
-        tree.add_child("raceTypes", setToPtree(m_raceTypes.value()));
+        json["raceTypes"] = setToJson(m_raceTypes.value());
 
-
-    return tree;
-
+    return json;
 }
 
 MarketFilter::MarketFilter(const std::set<std::string>& marketIds): m_marketIds(marketIds) {
@@ -62,4 +54,6 @@ MarketFilter::MarketFilter(const std::set<std::string>& marketIds): m_marketIds(
 MarketFilter::MarketFilter() {
 
 }
+
+
 

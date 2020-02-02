@@ -5,7 +5,6 @@
 #include "NavigationLoader.h"
 #include "Authentication.h"
 
-using boost::property_tree::ptree;
 using HttpsClient = SimpleWeb::Client<SimpleWeb::HTTPS>;
 
 
@@ -34,21 +33,21 @@ void NavigationLoader::init() {
             {
                 if(!ec)
                 {
-                    boost::property_tree::ptree parseTree;
+                    Json::Value json;
                     {
                         auto t1 = std::chrono::high_resolution_clock::now();
                         std::cout << "Parsing JSON structure ... " << response->content.size() << " bytes" << std::endl;
-                        boost::property_tree::read_json(response->content, parseTree);
+                        response->content >> json;
                         auto t2 = std::chrono::high_resolution_clock::now();
                         auto duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
                         std::cout << "Parsed JSON in " << duration << std::endl;
                     }
                     {
                         auto t1 = std::chrono::high_resolution_clock::now();
-                        std::string type = parseTree.get<std::string>("type");
-                        std::string name = parseTree.get<std::string>("name");
+                        std::string type = json["type"].asString();
+                        std::string name = json["name"].asString();
                         std::cout << "Recursing through json..." << std::endl;
-                        processJSONRoot(parseTree);
+                        processJSONRoot(json);
                         std::cout << "Done." << std::endl;
                         auto t2 = std::chrono::high_resolution_clock::now();
                         auto duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
@@ -177,82 +176,81 @@ void NavigationLoader::importRace(const BetfairRace* item, int indent, T& parent
 }
 
 
-void NavigationLoader::processJSONRoot(const boost::property_tree::ptree& parseTree) {
-    for (auto& node : parseTree.get_child("children")) {
-        processJSONEventType(node.second);
+void NavigationLoader::processJSONRoot(const Json::Value& json) {
+    for (const Json::Value& node : json["children"]) {
+        processJSONEventType(node);
     }
 }
-void NavigationLoader::processJSONEventType(const boost::property_tree::ptree& parseTree) {
-    std::string name = parseTree.get<std::string>("name");
-    std::string id = parseTree.get<std::string>("id");
+void NavigationLoader::processJSONEventType(const Json::Value& json) {
+    std::string name = json["name"].asString();
+    std::string id = json["id"].asString();
 
     m_betfairEventTypes.emplace_back(id, name);
     BetfairEventType* item = &(m_betfairEventTypes.back());
-    for (auto& node : parseTree.get_child("children")) {
-        if (node.second.get<std::string>("type") == "EVENT")
-            processJSONEvent(node.second, item);
-        else if (node.second.get<std::string>("type") == "GROUP")
-            processJSONGroup(node.second, item);
-        else if (node.second.get<std::string>("type") == "RACE")
-            processJSONRace(node.second, item);
+    for (const Json::Value& node : json["children"]) {
+        if (node["type"].asString() == "EVENT")
+            processJSONEvent(node, item);
+        else if (node["type"].asString() == "GROUP")
+            processJSONGroup(node, item);
+        else if (node["type"].asString() == "RACE")
+            processJSONRace(node, item);
     }
 }
 
 template <typename T>
-void NavigationLoader::processJSONEvent(const boost::property_tree::ptree& parseTree, T& parent) {
-    std::string name = parseTree.get<std::string>("name");
-    std::string id = parseTree.get<std::string>("id");
-    std::string country_code = parseTree.get<std::string>("countryCode");
+void NavigationLoader::processJSONEvent(const Json::Value& json, T& parent) {
+    std::string name = json["name"].asString();
+    std::string id = json["id"].asString();
+    std::string country_code = json["countryCode"].asString();
     m_betfairEvent.emplace_back(id, name, country_code);
     BetfairEvent* item = &(m_betfairEvent.back());
     parent->addChild(item);
-    for (auto& node : parseTree.get_child("children")) {
-        if (node.second.get<std::string>("type") == "EVENT")
-            processJSONEvent(node.second, item);
-        else if (node.second.get<std::string>("type") == "GROUP")
-            processJSONGroup(node.second, item);
-        else if (node.second.get<std::string>("type") == "MARKET") {
-            processJSONMarket(node.second, item);
+    for (const Json::Value& node : json["children"]) {
+        if (node["type"].asString() == "EVENT")
+            processJSONEvent(node, item);
+        else if (node["type"].asString() == "GROUP")
+            processJSONGroup(node, item);
+        else if (node["type"].asString() == "MARKET") {
+            processJSONMarket(node, item);
         }
     }
 }
 
 template <typename T>
-void NavigationLoader::processJSONRace(const boost::property_tree::ptree& parseTree, T& parent) {
-    std::string name = parseTree.get<std::string>("name");
-    std::string temp = parseTree.get<std::string>("id");
-    std::string id = parseTree.get<std::string>("id");
-    std::string start_time = parseTree.get<std::string>("startTime");
-    std::string venue = parseTree.get<std::string>("venue");
+void NavigationLoader::processJSONRace(const Json::Value& json, T& parent) {
+    std::string name = json["name"].asString();
+    std::string id = json["id"].asString();
+    std::string start_time = json["startTime"].asString();
+    std::string venue = json["venue"].asString();
     std::string race_number;
 
-    if (parseTree.get_optional<std::string>("raceNumber"))
-        race_number = parseTree.get<std::string>("raceNumber");
-    std::string country_code = parseTree.get<std::string>("countryCode");
+    if (json.isMember("raceNumber"))
+        race_number = json["raceNumber"].asString();
+    std::string country_code = json["countryCode"].asString();
 
     m_betfairRace.emplace_back(id, name, start_time, venue, race_number, country_code);
     BetfairRace* item = &(m_betfairRace.back());
     parent->addChild(item);
 
-    for (auto& node : parseTree.get_child("children")) {
-        if (node.second.get<std::string>("type") == "MARKET")
-            processJSONMarket(node.second, item);
+    for (const Json::Value& node : json["children"]) {
+        if (node["type"].asString() == "MARKET")
+            processJSONMarket(node, item);
     }
 }
 
 template <typename T>
-void NavigationLoader::processJSONMarket(const boost::property_tree::ptree& parseTree, T& parent) {
-    std::string exchangeId = parseTree.get<std::string>("exchangeId");
-    std::string id = parseTree.get<std::string>("id");
-    std::string marketStartTime = parseTree.get<std::string>("marketStartTime");
-    std::string marketType = parseTree.get<std::string>("marketType");
-    std::string tmp = parseTree.get<std::string>("numberOfWinners");
+void NavigationLoader::processJSONMarket(const Json::Value& json, T& parent) {
+    std::string exchangeId = json["exchangeId"].asString();
+    std::string id = json["id"].asString();
+    std::string marketStartTime = json["marketStartTime"].asString();
+    std::string marketType = json["marketType"].asString();
+    std::string tmp = json["numberOfWinners"].asString();
 
 
     int numberOfWinners = 0;
     if (!tmp.empty())
         numberOfWinners = stoi(tmp);
-    std::string name = parseTree.get<std::string>("name");
+    std::string name = json["name"].asString();
 
     m_betfairMarkets.emplace_back(id, exchangeId, marketStartTime, marketType, numberOfWinners, name);
     BetfairMarket* item = &(m_betfairMarkets.back());
@@ -260,17 +258,17 @@ void NavigationLoader::processJSONMarket(const boost::property_tree::ptree& pars
 }
 
 template <typename T>
-void NavigationLoader::processJSONGroup(const boost::property_tree::ptree& parseTree, T& parent) {
-    std::string name = parseTree.get<std::string>("name");
-    std::string id = parseTree.get<std::string>("id");
+void NavigationLoader::processJSONGroup(const Json::Value& json, T& parent) {
+    std::string name = json["name"].asString();
+    std::string id = json["id"].asString();
     m_betfairGroup.emplace_back(id,name);
     BetfairGroup* item = &(m_betfairGroup.back());
     parent->addChild(item);
-    for (auto& node : parseTree.get_child("children")) {
-        if (node.second.get<std::string>("type") == "EVENT")
-            processJSONEvent(node.second, item);
-        else if (node.second.get<std::string>("type") == "GROUP")
-            processJSONGroup(node.second, item);
+    for (const Json::Value& node : json["children"]) {
+        if (node["type"].asString() == "EVENT")
+            processJSONEvent(node, item);
+        else if (node["type"] == "GROUP")
+            processJSONGroup(node, item);
     }
 }
 

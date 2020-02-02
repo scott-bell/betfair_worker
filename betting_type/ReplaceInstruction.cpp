@@ -2,17 +2,15 @@
 // Created by scott on 29/01/2020.
 //
 
-#include <boost/property_tree/ptree.hpp>
 #include <utility>
 #include "ReplaceInstruction.h"
 
-boost::property_tree::ptree ReplaceInstruction::ptree() const {
-    boost::property_tree::ptree tree;
 
-    tree.put("betId",betId);
-    tree.put("newPrice",newPrice);
-
-    return tree;
+Json::Value ReplaceInstruction::json() const {
+    Json::Value json;
+    json["betId"]=betId;
+    json["newPrice"]=newPrice;
+    return json;
 }
 
 ReplaceInstruction::ReplaceInstruction(Json::Value json) {
@@ -27,3 +25,5 @@ ReplaceInstruction::ReplaceInstruction(std::string betId, double newPrice):
 {
 
 }
+
+

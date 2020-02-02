@@ -34,7 +34,7 @@ Json::Value BetfairMarket::json() {
         json["betting_type"] = m_bettingType.value();
     if (m_turnInPlayEnabled.has_value())
         json["turnInPlayEnabled"] = m_turnInPlayEnabled.value();
-    json["m_marketType"] = m_marketType;
+    json["market_type"] = m_marketType;
     if (m_regulator.has_value())
         json["regulator"] = m_regulator.value();
     if (m_marketBaseRate.has_value())

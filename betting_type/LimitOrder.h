@@ -19,7 +19,7 @@ struct LimitOrder {
     std::optional<std::string> betTargetType;
     std::optional<double> betTargetSize;
 
-    [[nodiscard]] boost::property_tree::ptree ptree() const;
+    [[nodiscard]] Json::Value json() const;
     LimitOrder(double size, double price, std::string persistenceType, std::optional<std::string> timeInForce, std::optional<double> minFillSize, std::optional<std::string> betTargetType, std::optional<double> betTargetSize);
     explicit LimitOrder(Json::Value json);
 

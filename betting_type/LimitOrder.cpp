@@ -2,31 +2,24 @@
 // Created by scott on 24/01/2020.
 //
 
-#include <boost/property_tree/ptree.hpp>
 #include <utility>
 #include "LimitOrder.h"
 
-boost::property_tree::ptree LimitOrder::ptree() const {
-
-    boost::property_tree::ptree tree;
-
-    tree.put("size",size);
-    tree.put("price",price);
-    tree.put("persistenceType",persistenceType);
+Json::Value LimitOrder::json() const {
+    Json::Value json;
+    json["size"]=size;
+    json["price"]=price;
+    json["persistenceType"]=persistenceType;
     if (timeInForce.has_value())
-        tree.put("timeInForce",timeInForce.value());
+        json["timeInForce"]=timeInForce.value();
     if (minFillSize.has_value())
-        tree.put("minFillSize",minFillSize.value());
+        json["minFillSize"]=minFillSize.value();
     if (betTargetType.has_value())
-        tree.put("betTargetType",betTargetType.value());
+        json["betTargetType"]=betTargetType.value();
     if (betTargetSize.has_value())
-        tree.put("betTargetSize",betTargetSize.value());
-
-
-    return tree;
-
+        json["betTargetSize"]=betTargetSize.value();
+    return json;
 }
-
 LimitOrder::LimitOrder(Json::Value json) {
 
     size = json["size"].asDouble();
@@ -49,3 +42,5 @@ LimitOrder::LimitOrder(double size, double price, std::string persistenceType, s
                        size(size), price(price), persistenceType(std::move(persistenceType)), timeInForce(std::move(timeInForce)), minFillSize(std::move(minFillSize)), betTargetType(std::move(betTargetType)), betTargetSize(std::move(betTargetSize))
 {
 }
+
+

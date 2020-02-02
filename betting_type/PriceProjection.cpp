@@ -4,26 +4,26 @@
 
 #include "PriceProjection.h"
 
-boost::property_tree::ptree PriceProjection::ptree() const {
-    boost::property_tree::ptree tree;
+Json::Value PriceProjection::json() const {
+    Json::Value json;
 
     if (priceData.has_value())
     {
-        boost::property_tree::ptree ntree;
+        Json::Value nested;
         for (const auto& s : priceData.value()) {
-            boost::property_tree::ptree child;
-            child.put("", s);
-            ntree.push_back(std::make_pair("", child));
+            nested.append(s);
         }
-        tree.put_child("priceData", ntree);
+        json["priceData"]= nested;
     }
     if (exBestOffersOverrides.has_value())
-        tree.put_child("exBestOffersOverrides", exBestOffersOverrides.value().ptree());
+        json["exBestOffersOverrides"] = exBestOffersOverrides.value().json();
     if (virtualise.has_value())
-        tree.put("virtualise", virtualise.value());
+        json["virtualise"] = virtualise.value();
     if (rolloverStakes.has_value())
-        tree.put("rolloverStakes", rolloverStakes.value());
+        json["rolloverStakes"] = rolloverStakes.value();
 
 
-    return tree;
+    return json;
+
+
 }

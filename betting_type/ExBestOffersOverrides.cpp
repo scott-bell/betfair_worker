@@ -4,20 +4,17 @@
 
 #include "ExBestOffersOverrides.h"
 
-boost::property_tree::ptree ExBestOffersOverrides::ptree() const {
-    boost::property_tree::ptree tree;
-
-
+Json::Value ExBestOffersOverrides::json() const {
+    Json::Value json;
     if (bestPricesDepth.has_value())
-        tree.put("bestPricesDepth",bestPricesDepth.value());
+        json["bestPricesDepth"] = bestPricesDepth.value();
     if (rollupModel.has_value())
-        tree.put("rollupModel",rollupModel.value());
+        json["rollupModel"] = rollupModel.value();
     if (rollupLimit.has_value())
-        tree.put("rollupLimit",rollupLimit.value());
+        json["rollupLimit"] = rollupLimit.value();
     if (rollupLiabilityThreshold.has_value())
-        tree.put("rollupLiabilityThreshold",rollupLiabilityThreshold.value());
+        json["rollupLiabilityThreshold"] = rollupLiabilityThreshold.value();
     if (rollupLiabilityFactor.has_value())
-        tree.put("rollupLiabilityFactor",rollupLiabilityFactor.value());
-
-    return tree;
+        json["rollupLiabilityFactor"] = rollupLiabilityFactor.value();
+    return json;
 }

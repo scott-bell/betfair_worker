@@ -13,7 +13,8 @@ struct Competition {
     std::optional<std::string> id;
     std::optional<std::string> name;
 
-    explicit Competition(Json::Value json);};
+    explicit Competition(Json::Value json);
+};
 
 
 #endif //BETFAIR_WORKER_COMPETITION_H

@@ -7,12 +7,12 @@
 
 #include <optional>
 #include <string>
-#include <boost/property_tree/ptree.hpp>
+#include <jsoncpp/json/json.h>
 
 struct TimeRange {
     std::optional<std::string> from;
     std::optional<std::string> to;
-    [[nodiscard]] boost::property_tree::ptree ptree() const;
+    [[nodiscard]] Json::Value json() const;
 };
 
 

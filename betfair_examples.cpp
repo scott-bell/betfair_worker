@@ -12,6 +12,7 @@
 
 int main() {
 
+
     BetfairData bd;
     NavigationLoader nl(bd);
     BetfairAPI api;
@@ -19,7 +20,6 @@ int main() {
 
     TaskManager tm(bd,api);
     tm.init();
-
 
     WebServer ws(bd);
     ws.init();

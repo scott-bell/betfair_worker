@@ -8,7 +8,7 @@
 
 #include <string>
 #include <set>
-#include <boost/property_tree/ptree.hpp>
+#include <jsoncpp/json/json.h>
 
 struct MarketFilter {
     std::optional<std::string> m_textQuery;
@@ -27,12 +27,12 @@ struct MarketFilter {
     std::optional<std::set<std::string> > m_withOrders;
     std::optional<std::set<std::string> > m_raceTypes;
     // TODO: lots more fields supported
-    boost::property_tree::ptree setToPtree(std::set<std::string>) const;
+    [[nodiscard]] Json::Value setToJson(std::set<std::string> items) const; // TODO replace
 public:
     explicit MarketFilter(const std::set<std::string>& marketIds);
     MarketFilter();
 
-    boost::property_tree::ptree ptree() const;
+    [[nodiscard]] Json::Value json() const;
 };
 
 

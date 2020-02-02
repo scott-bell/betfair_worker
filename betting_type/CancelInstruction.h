@@ -8,14 +8,13 @@
 #include <string>
 #include <optional>
 #include <forward_list>
-#include <boost/property_tree/ptree.hpp>
 #include <jsoncpp/json/json.h>
 
 struct CancelInstruction {
     std::optional<std::string> betId;
     std::optional<double> sizeReduction;
 
-    [[nodiscard]] boost::property_tree::ptree ptree() const;
+    [[nodiscard]] Json::Value json() const;
     CancelInstruction(std::optional<std::string> betId, std::optional<double> sizeReduction);
     explicit CancelInstruction(Json::Value json);
 };
