@@ -24,7 +24,7 @@ void TaskManager::init() {
 
     {
         std::cout << "listMarketCatalogue" << std::endl;
-        MarketFilter filter({"1.168024452"});
+        MarketFilter filter({"1.167703593"});
         std::set<std::string> projection = {"MARKET_START_TIME", "MARKET_DESCRIPTION", "RUNNER_DESCRIPTION"};
         std::forward_list<MarketCatalogue> items = api.listMarketCatalogue(filter, projection, "FIRST_TO_START", 1000,
                                                                            "en");
@@ -52,6 +52,16 @@ void TaskManager::init() {
                 if (item.description.value().rulesHasDate.has_value())
                     obj->rulesHasDate(item.description.value().rulesHasDate.value());
             }
+            if (item.runners.has_value())
+            {
+                for (const RunnerCatalog& rg : item.runners.value()) {
+                    BetfairRunner *runnerObj = bd.getBetfairRunner(std::to_string(rg.selectionId));
+                    if (runnerObj == nullptr) {
+                        runnerObj = &(bd.addRunner(std::to_string(rg.selectionId), rg.runnerName));
+                    }
+                }
+            }
+
         }
     }
 
@@ -61,7 +71,7 @@ void TaskManager::init() {
 
         std::cout << "listMarketBook" << std::endl;
 
-        std::forward_list<std::string> marketIds = {"1.168024452"};
+        std::forward_list<std::string> marketIds = {"1.167703593"};
         std::vector<std::string> v = {"EX_ALL_OFFERS", "EX_TRADED"};
         PriceProjection projection = {v, std::nullopt, false, false};
         std::forward_list<MarketBook> result = api.listMarketBook(marketIds, projection, "ALL", "NO_ROLLUP", false,

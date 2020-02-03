@@ -32,6 +32,10 @@ BetfairRace &BetfairData::addRace(std::string id, std::string name, std::string 
     auto item = m_betfairRace.emplace(id, BetfairRace(id, std::move(name), std::move(start_time), std::move(venue), std::move(race_number), std::move(country_code)));
     return item.first->second;
 }
+BetfairRunner &BetfairData::addRunner(const std::string &id, std::string name) {
+    auto item = m_betfairRunner.emplace(id, BetfairRunner(id, std::move(name)));
+    return item.first->second;
+}
 
 
 // p_item = &(m_betfair_data.addEvent(parent, item.get_id(), item.get_name()));
@@ -43,6 +47,13 @@ BetfairEvent& BetfairData::addEvent(const T& parent, const std::string& id, std:
 }*/
 
 
+BetfairRunner* BetfairData::getBetfairRunner(const std::string& id) {
+    auto item = m_betfairRunner.find(id);
+    if (item != m_betfairRunner.end())
+        return &item->second;
+    else
+        return nullptr;
+}
 BetfairEvent* BetfairData::getBetfairEvent(const std::string& id) {
     auto item = m_betfairEvent.find(id);
     if (item != m_betfairEvent.end())
@@ -143,3 +154,4 @@ int BetfairData::displayRace(const BetfairRace* item) const {
     }
     return sum;
 }
+
