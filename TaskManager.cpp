@@ -3,6 +3,8 @@
 //
 
 #include "TaskManager.h"
+#include "Application.h"
+#include <thread>
 
 TaskManager::TaskManager(BetfairData &bd, BetfairAPI& api) : bd(bd), api(api) {
 
@@ -10,12 +12,19 @@ TaskManager::TaskManager(BetfairData &bd, BetfairAPI& api) : bd(bd), api(api) {
 
 }
 
+void TaskManager::operator() (){
+    std::cout << "Started task manager thread";
+    init();
+
+}
+
+
 void TaskManager::init() {
 
 
     {
         std::cout << "listMarketCatalogue" << std::endl;
-        MarketFilter filter({"1.167635514"});
+        MarketFilter filter({"1.168024452"});
         std::set<std::string> projection = {"MARKET_START_TIME", "MARKET_DESCRIPTION", "RUNNER_DESCRIPTION"};
         std::forward_list<MarketCatalogue> items = api.listMarketCatalogue(filter, projection, "FIRST_TO_START", 1000,
                                                                            "en");
@@ -46,10 +55,13 @@ void TaskManager::init() {
         }
     }
 
+    while (Application::state != Application::State::STOPPING)
     {
+        std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+
         std::cout << "listMarketBook" << std::endl;
 
-        std::forward_list<std::string> marketIds = {"1.167635514"};
+        std::forward_list<std::string> marketIds = {"1.168024452"};
         std::vector<std::string> v = {"EX_ALL_OFFERS", "EX_TRADED"};
         PriceProjection projection = {v, std::nullopt, false, false};
         std::forward_list<MarketBook> result = api.listMarketBook(marketIds, projection, "ALL", "NO_ROLLUP", false,
@@ -91,8 +103,5 @@ void TaskManager::init() {
             }
         }
     }
-
-
-
-
 }
+

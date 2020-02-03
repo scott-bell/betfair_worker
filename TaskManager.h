@@ -13,8 +13,9 @@ class TaskManager {
     BetfairData& bd;
     BetfairAPI& api;
 public:
-    explicit TaskManager(BetfairData& bd, BetfairAPI& api);
+    TaskManager(BetfairData& bd, BetfairAPI& api);
     void init();
+    void operator() ();
 
 };
 

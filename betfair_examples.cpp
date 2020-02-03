@@ -2,27 +2,27 @@
 // Created by scott on 16/01/2020.
 //
 
-#include <betting_type/MarketFilter.h>
 #include "NavigationLoader.h"
 #include "BetfairData.h"
 #include "BetfairAPI.h"
 #include "WebServer.h"
 #include "TaskManager.h"
-#include <betting_type/MarketCatalogue.h>
+#include "Application.h"
+#include <thread>
 
 int main() {
-
 
     BetfairData bd;
     NavigationLoader nl(bd);
     BetfairAPI api;
     nl.init();
 
-    TaskManager tm(bd,api);
-    tm.init();
+    std::thread taskThread = std::thread(TaskManager(bd,api));
 
     WebServer ws(bd);
     ws.init();
+
+    Application::state = Application::State::READY;
 
     return 0;
 }
