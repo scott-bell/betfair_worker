@@ -26,15 +26,15 @@ class NavigationLoader {
     BetfairData& m_betfair_data;
     bool verbose;
     void importRoot();
-    void importEventType(const BetfairEventType& item);
+    void importEventType(const BetfairEventType* temp);
     template <typename T>
-    void importEvent(const BetfairEvent* item, int indent, T& parent);
+    void importEvent(const BetfairEvent* temp, int indent, T* parent);
     template <typename T>
-    void importGroup(const BetfairGroup* item, int indent, T& parent);
+    void importGroup(const BetfairGroup* temp, int indent, T* parent);
     template <typename T>
-    void importMarket(const BetfairMarket* item, int indent, T& parent);
+    void importMarket(const BetfairMarket* temp, int indent, T* parent);
     template <typename T>
-    void importRace(const BetfairRace* item, int indent, T& parent);
+    void importRace(const BetfairRace* temp, int indent, T* parent);
     void processJSONRoot(const Json::Value& json);
     void processJSONEventType(const Json::Value& json);
     template <typename T>

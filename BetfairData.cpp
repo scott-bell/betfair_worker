@@ -5,47 +5,36 @@
 #include "BetfairData.h"
 #include <utility>
 
-BetfairEventType& BetfairData::addEventType(const std::string& id, std::string name) {
-    auto item = m_betfairEventTypes.emplace(id, BetfairEventType(id,std::move(name)));
+BetfairEventType& BetfairData::addEventType(const BetfairEventType& t) {
+    auto item = m_betfairEventTypes.emplace(t.get_id(), t);
     return item.first->second;
 }
 
-BetfairEvent& BetfairData::addEvent(const std::string &id, std::string name, std::string country_code) {
-    auto item = m_betfairEvent.emplace(id, BetfairEvent(id,std::move(name),std::move(country_code)));
+BetfairEvent& BetfairData::addEvent(const BetfairEvent& t) {
+    auto item = m_betfairEvent.emplace(t.get_id(), t);
     return item.first->second;
 }
 
-BetfairGroup &BetfairData::addGroup(const std::string &id, std::string name) {
-    auto item = m_betfairGroup.emplace(id, BetfairGroup(id,std::move(name)));
-    return item.first->second;
-}
-
-
-BetfairMarket &BetfairData::addMarket(const std::string &id, std::string exchange_id, std::string market_start_time,
-                                      std::string market_type, int number_of_winners, std::string name) {
-    auto item = m_betfairMarkets.emplace(id, BetfairMarket(id,std::move(exchange_id), std::move(market_start_time), std::move(market_type), number_of_winners, name));
-    return item.first->second;
-}
-
-BetfairRace &BetfairData::addRace(std::string id, std::string name, std::string start_time, std::string venue,
-                                  std::string race_number, std::string country_code) {
-    auto item = m_betfairRace.emplace(id, BetfairRace(id, std::move(name), std::move(start_time), std::move(venue), std::move(race_number), std::move(country_code)));
-    return item.first->second;
-}
-BetfairRunner &BetfairData::addRunner(const std::string &id, std::string name) {
-    auto item = m_betfairRunner.emplace(id, BetfairRunner(id, std::move(name)));
+BetfairGroup &BetfairData::addGroup(const BetfairGroup& t) {
+    auto item = m_betfairGroup.emplace(t.get_id(), t);
     return item.first->second;
 }
 
 
-// p_item = &(m_betfair_data.addEvent(parent, item.get_id(), item.get_name()));
-/*template<typename T>
-BetfairEvent& BetfairData::addEvent(const T& parent, const std::string& id, std::string name, std::string country_code) {
-    auto item = m_betfairEvent.emplace(id, BetfairEvent(id,name,country_code));
-    parent.addChild(item);
+BetfairMarket &BetfairData::addMarket(const BetfairMarket& t) {
+    auto item = m_betfairMarkets.emplace(t.get_id(), t);
     return item.first->second;
-}*/
+}
 
+BetfairRace &BetfairData::addRace(const BetfairRace& t) {
+    auto item = m_betfairRace.emplace(t.get_id(), t);
+    return item.first->second;
+}
+
+BetfairRunner &BetfairData::addRunner(const BetfairRunner& t) {
+    auto item = m_betfairRunner.emplace(t.get_id(), t);
+    return item.first->second;
+}
 
 BetfairRunner* BetfairData::getBetfairRunner(const std::string& id) {
     auto item = m_betfairRunner.find(id);

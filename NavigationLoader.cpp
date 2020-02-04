@@ -69,27 +69,27 @@ void NavigationLoader::init() {
 
 void NavigationLoader::importRoot() {
     for (const BetfairEventType& item : m_betfairEventTypes) {
-        importEventType(item);
+        importEventType(&item);
     }
 }
 
-void NavigationLoader::importEventType(const BetfairEventType& item) {
+void NavigationLoader::importEventType(const BetfairEventType* temp) {
     if (verbose)
-        std::cout << item.get_name() << ' ' << item.get_id() << std::endl;
-    BetfairEventType* p_item = m_betfair_data.getBetfairEventType(item.get_id());
+        std::cout << temp->get_name() << ' ' << temp->get_id() << std::endl;
+    BetfairEventType* p_item = m_betfair_data.getBetfairEventType(temp->get_id());
     if (p_item == nullptr) {
-        p_item = &(m_betfair_data.addEventType(item.get_id(), item.get_name()));
+        p_item = &(m_betfair_data.addEventType(*temp));
     } else {
         // do some updates
     }
 
-    for (BetfairEvent* i : item.getBetfairEvents()) {
+    for (const BetfairEvent* i : temp->getBetfairEvents()) {
         importEvent(i, 1, p_item);
     }
-    for (BetfairGroup* i : item.getBetfairGroups()) {
+    for (const BetfairGroup* i : temp->getBetfairGroups()) {
         importGroup(i, 1, p_item);
     }
-    for (BetfairRace* i : item.getBetfairRaces()) {
+    for (const BetfairRace* i : temp->getBetfairRaces()) {
         importRace(i, 1, p_item);
     }
 }
@@ -97,60 +97,59 @@ void NavigationLoader::importEventType(const BetfairEventType& item) {
 
 
 template <typename T>
-void NavigationLoader::importEvent(const BetfairEvent* item, int indent, T& parent)  {
+void NavigationLoader::importEvent(const BetfairEvent* temp, int indent, T* parent)  {
     if (verbose)
-        std::cout << std::string(indent,' ') << '[' << item->get_name() << "] " << item->get_id() << std::endl;
-    BetfairEvent* p_item = m_betfair_data.getBetfairEvent(item->get_id());
+        std::cout << std::string(indent,' ') << '[' << temp->get_name() << "] " << temp->get_id() << std::endl;
+    BetfairEvent* p_item = m_betfair_data.getBetfairEvent(temp->get_id());
     if (p_item == nullptr) {
-        p_item = &(m_betfair_data.addEvent(item->get_id(), item->get_name(), item->get_country_code()));
+        p_item = &(m_betfair_data.addEvent(*temp));
         parent->addChild(p_item);
     } else {
         parent->addChild(p_item);
     }
 
-    for (BetfairEvent* i : item->getBetfairEvents()) {
+
+
+    for (BetfairEvent* i : temp->getBetfairEvents()) {
         importEvent(i, indent + 1, p_item);
     }
-    for (BetfairGroup* i : item->getBetfairGroups()) {
+    for (BetfairGroup* i : temp->getBetfairGroups()) {
         importGroup(i, indent + 1, p_item);
     }
-    for (BetfairMarket* i : item->getBetfairMarkets()) {
+    for (BetfairMarket* i : temp->getBetfairMarkets()) {
         importMarket(i, indent + 1, p_item);
     }
 }
 
 
 template <typename T>
-void NavigationLoader::importGroup(const BetfairGroup* item, int indent, T& parent)  {
+void NavigationLoader::importGroup(const BetfairGroup* temp, int indent, T* parent)  {
     if (verbose)
-        std::cout << std::string(indent,' ') << '(' << item->get_name() << ") " << item->get_id() << std::endl;
-    BetfairGroup* p_item = m_betfair_data.getBetfairGroup(item->get_id());
+        std::cout << std::string(indent,' ') << '(' << temp->get_name() << ") " << temp->get_id() << std::endl;
+    BetfairGroup* p_item = m_betfair_data.getBetfairGroup(temp->get_id());
     if (p_item == nullptr) {
-        p_item = &(m_betfair_data.addGroup(item->get_id(), item->get_name()));
+        p_item = &(m_betfair_data.addGroup(*temp));
         parent->addChild(p_item);
     } else {
         parent->addChild(p_item);
     }
 
-    for (BetfairEvent* i : item->getBetfairEvents()) {
+    for (const BetfairEvent* i : temp->getBetfairEvents()) {
         importEvent(i, indent + 1, p_item);
     }
-    for (BetfairGroup* i : item->getBetfairGroups()) {
+    for (const BetfairGroup* i : temp->getBetfairGroups()) {
         importGroup(i, indent + 1, p_item);
     }
 }
 
 
 template <typename T>
-void NavigationLoader::importMarket(const BetfairMarket* item, int indent, T& parent) {
+void NavigationLoader::importMarket(const BetfairMarket* temp, int indent, T* parent) {
     if (verbose)
-        std::cout << std::string(indent,' ') << '<' << item->name() << "> " << item->get_id() << std::endl;
-    BetfairMarket* p_item = m_betfair_data.getBetfairMarket(item->get_id());
+        std::cout << std::string(indent,' ') << '<' << temp->name() << "> " << temp->get_id() << std::endl;
+    BetfairMarket* p_item = m_betfair_data.getBetfairMarket(temp->get_id());
     if (p_item == nullptr) {
-        p_item = &(m_betfair_data.addMarket(
-                item->get_id(), item->exchangeId(), item->startTime(), item->marketType(),
-                item->numberOfWinners(), item->name()
-        ));
+        p_item = &(m_betfair_data.addMarket(*temp));
         parent->addChild(p_item);
     } else {
         parent->addChild(p_item);
@@ -159,18 +158,17 @@ void NavigationLoader::importMarket(const BetfairMarket* item, int indent, T& pa
 }
 
 template <typename T>
-void NavigationLoader::importRace(const BetfairRace* item, int indent, T& parent) {
+void NavigationLoader::importRace(const BetfairRace* temp, int indent, T* parent) {
     if (verbose)
-        std::cout << std::string(indent,' ') << '{' << item->get_name() << "} " << item->get_id() << std::endl;
-    BetfairRace* p_item = m_betfair_data.getBetfairRace(item->get_id());
+        std::cout << std::string(indent,' ') << '{' << temp->get_name() << "} " << temp->get_id() << std::endl;
+    BetfairRace* p_item = m_betfair_data.getBetfairRace(temp->get_id());
     if (p_item == nullptr) {
-        p_item = &(m_betfair_data.addRace(item->get_id(), item->get_name(), item->get_start_time(), item->get_venue(),
-                                          item->get_race_number(), item->get_country_code()));
+        p_item = &(m_betfair_data.addRace(*temp));
         parent->addChild(p_item);
     } else {
         parent->addChild(p_item);
     }
-    for (BetfairMarket* i : item->getBetfairMarkets()) {
+    for (const BetfairMarket* i : temp->getBetfairMarkets()) {
         importMarket(i, indent + 1, p_item);
     }
 }

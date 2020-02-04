@@ -31,12 +31,12 @@ public:
         m_betfairEventTypes.reserve(100);
         m_betfairRunner.reserve(100000);
     }
-    BetfairEventType& addEventType(const std::string& id, std::string name);
-    BetfairEvent& addEvent(const std::string &id, std::string name, std::string country_code);
-    BetfairMarket& addMarket(const std::string &id, std::string exchange_id, std::string market_start_time, std::string market_type, int number_of_winners, std::string name);
-    BetfairGroup& addGroup(const std::string &id, std::string name);
-    BetfairRace& addRace(std::string id, std::string name, std::string start_time, std::string venue, std::string race_number, std::string country_code);
-    BetfairRunner& addRunner(const std::string& id, std::string name);
+    BetfairEventType& addEventType(const BetfairEventType& t);
+    BetfairEvent& addEvent(const BetfairEvent& t);
+    BetfairMarket& addMarket(const BetfairMarket& t);
+    BetfairGroup& addGroup(const BetfairGroup &t);
+    BetfairRace& addRace(const BetfairRace &t);
+    BetfairRunner& addRunner(const BetfairRunner &t);
     int displayEventType(const BetfairEventType& item) const;
     int displayEvent(const BetfairEvent* item) const;
     int displayGroup(const BetfairGroup* item) const;
