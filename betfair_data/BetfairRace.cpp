@@ -13,6 +13,18 @@ BetfairRace::BetfairRace(std::string id, std::string name, std::string start_tim
 
 }
 
+Json::Value BetfairRace::json() {
+    Json::Value json;
+    json["id"] = m_id;
+    json["name"] = m_name;
+    json["start_time"] = m_start_time;
+    json["venue"] = m_venue;
+    json["race_number"] = m_race_number;
+    json["country_code"] = m_country_code;
+    return json;
+}
+
+
 void BetfairRace::addChild(BetfairMarket* item) {
     m_children_market.push_back(item);
 }

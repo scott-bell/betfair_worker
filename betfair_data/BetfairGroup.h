@@ -9,6 +9,8 @@
 #include <vector>
 #include "BetfairEvent.h"
 #include "BetfairGroup.h"
+#include <jsoncpp/json/json.h>
+
 
 class BetfairEvent;
 
@@ -19,6 +21,7 @@ class BetfairGroup : public BetfairObject {
 public:
     BetfairGroup(std::string id, std::string name);
     BetfairGroup() = delete;
+    Json::Value json();
     void addChild(BetfairEvent* item);
     void addChild(BetfairGroup* item);
     const std::string& get_name() const;

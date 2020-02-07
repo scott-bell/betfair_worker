@@ -16,7 +16,8 @@ public:
     explicit WebServer(BetfairData& bd);
     void init();
 
-
+    template <typename T, typename C>
+    void addResource(HttpServer& server, const std::string &path, C& container);
 };
 
 

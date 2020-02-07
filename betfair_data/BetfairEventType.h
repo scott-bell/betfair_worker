@@ -21,6 +21,7 @@ class BetfairEventType : public BetfairObject {
     std::vector<BetfairRace*> m_children_race;
 public:
     const std::string& get_name() const;
+    Json::Value json();
     BetfairEventType(std::string id, std::string name);
     BetfairEventType() = delete;
     void addChild(BetfairEvent* item);

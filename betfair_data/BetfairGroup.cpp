@@ -5,6 +5,13 @@ BetfairGroup::BetfairGroup(std::string id, std::string name) : BetfairObject(std
 
 }
 
+Json::Value BetfairGroup::json() {
+    Json::Value json;
+    json["id"] = m_id;
+    json["name"] = m_name;
+    return json;
+}
+
 void BetfairGroup::addChild(BetfairEvent* item) {
     m_children_event.push_back(item);
 }

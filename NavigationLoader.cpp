@@ -76,9 +76,9 @@ void NavigationLoader::importRoot() {
 void NavigationLoader::importEventType(const BetfairEventType* temp) {
     if (verbose)
         std::cout << temp->get_name() << ' ' << temp->get_id() << std::endl;
-    BetfairEventType* p_item = m_betfair_data.getBetfairEventType(temp->get_id());
+    BetfairEventType* p_item = m_betfair_data.eventTypeModel().getById(temp->get_id());
     if (p_item == nullptr) {
-        p_item = &(m_betfair_data.addEventType(*temp));
+        p_item = &(m_betfair_data.eventTypeModel().add(*temp));
     } else {
         // do some updates
     }
@@ -100,9 +100,9 @@ template <typename T>
 void NavigationLoader::importEvent(const BetfairEvent* temp, int indent, T* parent)  {
     if (verbose)
         std::cout << std::string(indent,' ') << '[' << temp->get_name() << "] " << temp->get_id() << std::endl;
-    BetfairEvent* p_item = m_betfair_data.getBetfairEvent(temp->get_id());
+    BetfairEvent* p_item = m_betfair_data.eventModel().getById(temp->get_id());
     if (p_item == nullptr) {
-        p_item = &(m_betfair_data.addEvent(*temp));
+        p_item = &(m_betfair_data.eventModel().add(*temp));
         parent->addChild(p_item);
     } else {
         parent->addChild(p_item);
@@ -126,9 +126,9 @@ template <typename T>
 void NavigationLoader::importGroup(const BetfairGroup* temp, int indent, T* parent)  {
     if (verbose)
         std::cout << std::string(indent,' ') << '(' << temp->get_name() << ") " << temp->get_id() << std::endl;
-    BetfairGroup* p_item = m_betfair_data.getBetfairGroup(temp->get_id());
+    BetfairGroup* p_item = m_betfair_data.groupModel().getById(temp->get_id());
     if (p_item == nullptr) {
-        p_item = &(m_betfair_data.addGroup(*temp));
+        p_item = &(m_betfair_data.groupModel().add(*temp));
         parent->addChild(p_item);
     } else {
         parent->addChild(p_item);
@@ -147,9 +147,9 @@ template <typename T>
 void NavigationLoader::importMarket(const BetfairMarket* temp, int indent, T* parent) {
     if (verbose)
         std::cout << std::string(indent,' ') << '<' << temp->name() << "> " << temp->get_id() << std::endl;
-    BetfairMarket* p_item = m_betfair_data.getBetfairMarket(temp->get_id());
+    BetfairMarket* p_item = m_betfair_data.marketModel().getById(temp->get_id());
     if (p_item == nullptr) {
-        p_item = &(m_betfair_data.addMarket(*temp));
+        p_item = &(m_betfair_data.marketModel().add(*temp));
         parent->addChild(p_item);
     } else {
         parent->addChild(p_item);
@@ -161,9 +161,9 @@ template <typename T>
 void NavigationLoader::importRace(const BetfairRace* temp, int indent, T* parent) {
     if (verbose)
         std::cout << std::string(indent,' ') << '{' << temp->get_name() << "} " << temp->get_id() << std::endl;
-    BetfairRace* p_item = m_betfair_data.getBetfairRace(temp->get_id());
+    BetfairRace* p_item = m_betfair_data.raceModel().getById(temp->get_id());
     if (p_item == nullptr) {
-        p_item = &(m_betfair_data.addRace(*temp));
+        p_item = &(m_betfair_data.raceModel().add(*temp));
         parent->addChild(p_item);
     } else {
         parent->addChild(p_item);

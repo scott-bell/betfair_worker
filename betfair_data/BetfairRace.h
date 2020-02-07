@@ -22,6 +22,7 @@ public:
     BetfairRace(std::string id, std::string name, std::string start_time,
                 std::string venue, std::string race_number, std::string country_code);
     BetfairRace() = delete;
+    Json::Value json();
     void addChild(BetfairMarket* item);
     const std::string& get_name() const;
     const std::string& get_start_time() const;

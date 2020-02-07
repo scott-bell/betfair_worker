@@ -23,6 +23,7 @@ class BetfairEvent : public BetfairObject {
     std::vector<BetfairMarket*> m_children_market{};
 public:
     BetfairEvent(std::string id, std::string name, std::string country_code);
+    Json::Value json();
     BetfairEvent() = delete;
     ~BetfairEvent() {
         //std::cout << "Destroyed BetfairEvent " << m_id << std::endl;

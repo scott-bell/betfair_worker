@@ -40,3 +40,11 @@ const std::string &BetfairEvent::get_country_code() const {
     return m_country_code;
 }
 
+Json::Value BetfairEvent::json() {
+    Json::Value json;
+    json["id"] = m_id;
+    json["name"] = m_name;
+    json["country_code"] = m_country_code;
+    return json;
+}
+

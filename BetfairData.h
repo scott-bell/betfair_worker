@@ -13,53 +13,27 @@
 #include <betfair_data/BetfairEvent.h>
 #include <unordered_map>
 #include <betfair_data/BetfairRunner.h>
+#include "DataModel.h"
+
 
 class BetfairData {
     bool m_verbose;
-    std::unordered_map<std::string,BetfairMarket> m_betfairMarkets;
-    std::unordered_map<std::string,BetfairEventType> m_betfairEventTypes;
-    std::unordered_map<std::string,BetfairRace> m_betfairRace;
-    std::unordered_map<std::string,BetfairGroup> m_betfairGroup;
-    std::unordered_map<std::string,BetfairEvent> m_betfairEvent;
-    std::unordered_map<std::string,BetfairRunner> m_betfairRunner;
+    DataModel<BetfairMarket>        m_marketModel = DataModel<BetfairMarket>{30000};
+    DataModel<BetfairEventType>     m_eventTypeModel = DataModel<BetfairEventType>{100};
+    DataModel<BetfairGroup>         m_groupModel = DataModel<BetfairGroup>{100};
+    DataModel<BetfairRace>          m_raceModel = DataModel<BetfairRace>{1000};
+    DataModel<BetfairEvent>         m_eventModel = DataModel<BetfairEvent>{5000};
+    DataModel<BetfairRunner>        m_runnerModel = DataModel<BetfairRunner>{100000};
 public:
+    DataModel<BetfairMarket>& marketModel();
+    DataModel<BetfairEventType>& eventTypeModel();
+    DataModel<BetfairEvent>& eventModel();
+    DataModel<BetfairGroup>& groupModel();
+    DataModel<BetfairRunner>& runnerModel();
+    DataModel<BetfairRace>& raceModel();
     BetfairData(): m_verbose(false) {
-        m_betfairMarkets.reserve(30000);
-        m_betfairEvent.reserve(5000);
-        m_betfairRace.reserve(1000);
-        m_betfairGroup.reserve(1000);
-        m_betfairEventTypes.reserve(100);
-        m_betfairRunner.reserve(100000);
-    }
-    BetfairEventType& addEventType(const BetfairEventType& t);
-    BetfairEvent& addEvent(const BetfairEvent& t);
-    BetfairMarket& addMarket(const BetfairMarket& t);
-    BetfairGroup& addGroup(const BetfairGroup &t);
-    BetfairRace& addRace(const BetfairRace &t);
-    BetfairRunner& addRunner(const BetfairRunner &t);
-    int displayEventType(const BetfairEventType& item) const;
-    int displayEvent(const BetfairEvent* item) const;
-    int displayGroup(const BetfairGroup* item) const;
-    int displayRace(const BetfairRace* item) const;
-    int displayMarket(const BetfairMarket* item) const;
-
-    BetfairEventType* getBetfairEventType(const std::string& id);
-    BetfairEvent* getBetfairEvent(const std::string& id);
-    BetfairGroup* getBetfairGroup(const std::string& id);
-    BetfairMarket* getBetfairMarket(const std::string& id);
-    BetfairRace* getBetfairRace(const std::string& id);
-    BetfairRunner* getBetfairRunner(const std::string& id);
-
-    int nodeCountRecursive();
-    unsigned long nodeCount() {
-        return  m_betfairMarkets.size() +
-                m_betfairEventTypes.size() +
-                m_betfairRace.size() +
-                m_betfairGroup.size() +
-                m_betfairEvent.size();
     }
 
 };
-
 
 #endif //BETFAIR_WORKER_BETFAIRDATA_H
