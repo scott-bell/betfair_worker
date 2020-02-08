@@ -27,4 +27,8 @@ DataModel<BetfairRace>& BetfairData::raceModel() {
     return m_raceModel;
 }
 
+DataModel<BetfairOrder>& BetfairData::orderModel() {
+    return m_orderModel;
+}
+
 

@@ -13,6 +13,7 @@
 #include <betfair_data/BetfairEvent.h>
 #include <unordered_map>
 #include <betfair_data/BetfairRunner.h>
+#include <betfair_data/BetfairOrder.h>
 #include "DataModel.h"
 
 
@@ -24,6 +25,7 @@ class BetfairData {
     DataModel<BetfairRace>          m_raceModel = DataModel<BetfairRace>{1000};
     DataModel<BetfairEvent>         m_eventModel = DataModel<BetfairEvent>{5000};
     DataModel<BetfairRunner>        m_runnerModel = DataModel<BetfairRunner>{100000};
+    DataModel<BetfairOrder>         m_orderModel = DataModel<BetfairOrder>{1000};
 public:
     DataModel<BetfairMarket>& marketModel();
     DataModel<BetfairEventType>& eventTypeModel();
@@ -31,6 +33,7 @@ public:
     DataModel<BetfairGroup>& groupModel();
     DataModel<BetfairRunner>& runnerModel();
     DataModel<BetfairRace>& raceModel();
+    DataModel<BetfairOrder>& orderModel();
     BetfairData(): m_verbose(false) {
     }
 

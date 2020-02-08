@@ -8,8 +8,13 @@
 
 BetfairMarket::BetfairMarket(std::string id, std::string exchange_id, std::string market_start_time,
                              std::string market_type, int number_of_winners, std::string name) :
-        BetfairObject(std::move(id)), m_exchangeId(std::move(exchange_id)), m_startTime(std::move(market_start_time)), m_marketType(std::move(market_type)), m_numberOfWinners(number_of_winners), m_name(std::move(name)) {
-
+        BetfairObject(std::move(id)),
+        m_exchangeId(std::move(exchange_id)),
+        m_startTime(std::move(market_start_time)),
+        m_numberOfWinners(number_of_winners),
+        m_name(std::move(name)),
+        m_marketType(std::move(market_type))
+{
 }
 
 Json::Value BetfairMarket::json() {

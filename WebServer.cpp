@@ -47,6 +47,7 @@ void WebServer::init() {
     addResource<BetfairRace,DataModel<BetfairRace>> (server, "race", bd.raceModel());
     addResource<BetfairGroup,DataModel<BetfairGroup>> (server, "group", bd.groupModel());
     addResource<BetfairEventType,DataModel<BetfairEventType>> (server, "eventtype", bd.eventTypeModel());
+    addResource<BetfairOrder,DataModel<BetfairOrder>> (server, "order", bd.orderModel());
 
     std::thread server_thread([&server]() {
         // Start server

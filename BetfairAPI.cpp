@@ -67,6 +67,7 @@ ReplaceExecutionReport BetfairAPI::replaceOrders(const std::string& marketId, st
             }
     );
     client.io_service->run();
+    client.io_service->stop();
     return result;
 }
 
@@ -118,6 +119,7 @@ UpdateExecutionReport BetfairAPI::updateOrders(std::string marketId, std::forwar
             }
     );
     client.io_service->run();
+    client.io_service->stop();
 
     return result;
 }
@@ -170,6 +172,7 @@ CancelExecutionReport BetfairAPI::cancelOrders(std::optional<std::string> market
             }
     );
     client.io_service->run();
+    client.io_service->stop();
 
 
     return result;
@@ -248,6 +251,7 @@ CurrentOrderSummaryReport BetfairAPI::listCurrentOrders(std::optional<std::set<s
     ss << styledWriter.write(json);
     std::cout << ss.str();
 
+    client.io_service->reset();
     client.request(
             "POST",
             "/exchange/betting/json-rpc/v1",
@@ -261,11 +265,12 @@ CurrentOrderSummaryReport BetfairAPI::listCurrentOrders(std::optional<std::set<s
                 if (root.isMember("error")) {
                     throw APINGException(root["error"]["data"]["APINGException"]);
                 }
+                Json::Value a = root["result"];
                 result = CurrentOrderSummaryReport(root["result"]);
             }
     );
     client.io_service->run();
-
+    client.io_service->stop();
 
     return result;
 }
@@ -361,6 +366,7 @@ std::forward_list<MarketBook> BetfairAPI::listMarketBook(const std::forward_list
             }
     );
     client.io_service->run();
+    client.io_service->stop();
 
     return items;
 }
@@ -423,6 +429,7 @@ PlaceExecutionReport BetfairAPI::placeOrders(const std::string& marketId, const 
             }
     );
     client.io_service->run();
+    client.io_service->stop();
 
 
     return result;

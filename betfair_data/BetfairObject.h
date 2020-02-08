@@ -7,6 +7,7 @@
 
 
 #include <string>
+#include <jsoncpp/json/json.h>
 
 class BetfairObject {
 protected:
@@ -15,7 +16,8 @@ protected:
     explicit BetfairObject(std::string id);
 public:
     BetfairObject() = delete;
-    const std::string& get_id() const;
+    virtual Json::Value json() = 0;
+    [[nodiscard]] const std::string& get_id() const;
 };
 
 

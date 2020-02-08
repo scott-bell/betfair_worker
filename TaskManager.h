@@ -12,6 +12,7 @@
 class TaskManager {
     BetfairData& bd;
     BetfairAPI& api;
+    std::set<std::string> m_marketIds = {"1.167777648"};
 public:
     TaskManager(BetfairData& bd, BetfairAPI& api);
     void init();
