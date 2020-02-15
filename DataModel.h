@@ -2,8 +2,8 @@
 // Created by scott on 07/02/2020.
 //
 
-#ifndef BETFAIR_WORKER_DATAMODEL_H
-#define BETFAIR_WORKER_DATAMODEL_H
+#ifndef SXCLIENT_DATAMODEL_H
+#define SXCLIENT_DATAMODEL_H
 
 #include <unordered_map>
 
@@ -14,12 +14,14 @@ public:
     T& add(const T& t);
     T* getById(const std::string& id);
     int nodeCount();
+    const std::unordered_map<std::string,T>& items();
+
     explicit DataModel(int size);
 };
 
 template<typename T>
 T &DataModel<T>::add(const T &t) {
-    auto item = m_items.emplace(t.get_id(), t);
+    auto item = m_items.emplace(t.id(), t);
     return item.first->second;
 }
 
@@ -42,5 +44,9 @@ int DataModel<T>::nodeCount() {
     return 0;
 }
 
+template<typename T>
+const std::unordered_map<std::string, T>& DataModel<T>::items() {
+    return m_items;
+}
 
-#endif //BETFAIR_WORKER_DATAMODEL_H
+#endif //SXCLIENT_DATAMODEL_H

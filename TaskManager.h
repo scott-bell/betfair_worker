@@ -2,23 +2,25 @@
 // Created by scott on 31/01/2020.
 //
 
-#ifndef BETFAIR_WORKER_TASKMANAGER_H
-#define BETFAIR_WORKER_TASKMANAGER_H
+#ifndef SXCLIENT_TASKMANAGER_H
+#define SXCLIENT_TASKMANAGER_H
 
 
-#include "BetfairData.h"
-#include "BetfairAPI.h"
+#include "DataModels.h"
+#include "APIClient.h"
 
 class TaskManager {
-    BetfairData& bd;
-    BetfairAPI& api;
-    std::set<std::string> m_marketIds = {"1.167777648"};
+    DataModels& bd;
+    APIClient& api;
+    void getMarketCatalogue(const std::set<std::string>& marketIds);
+    void getMarketBook(const std::set<std::string>& marketIds);
+    void getOrders();
 public:
-    TaskManager(BetfairData& bd, BetfairAPI& api);
+    TaskManager(DataModels& bd, APIClient& api);
     void init();
     void operator() ();
 
 };
 
 
-#endif //BETFAIR_WORKER_TASKMANAGER_H
+#endif //SXCLIENT_TASKMANAGER_H

@@ -9,11 +9,11 @@ using HttpsClient = SimpleWeb::Client<SimpleWeb::HTTPS>;
 
 
 void NavigationLoader::init() {
-    m_betfairMarkets.reserve(30000);
-    m_betfairEvent.reserve(5000);
-    m_betfairRace.reserve(1000);
-    m_betfairGroup.reserve(1000);
-    m_betfairEventTypes.reserve(100);
+    m_markets.reserve(30000);
+    m_event.reserve(5000);
+    m_race.reserve(1000);
+    m_group.reserve(1000);
+    m_eventTypes.reserve(100);
 
     HttpsClient client("api.betfair.com:443", true);
 
@@ -51,15 +51,15 @@ void NavigationLoader::init() {
                         std::cout << "Done." << std::endl;
                         auto t2 = std::chrono::high_resolution_clock::now();
                         auto duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
-                        unsigned long node_count = m_betfairMarkets.size() + m_betfairEvent.size() + m_betfairRace.size() + m_betfairGroup.size() + m_betfairEventTypes.size();
-                        std::cout <<    "Parsed JSON in " << duration << ". "
-                                        "Markets: " << m_betfairMarkets.size() <<
-                                        ", events: " << m_betfairEvent.size() <<
-                                        ", races: " << m_betfairRace.size() <<
-                                        ", groups: " << m_betfairGroup.size() <<
-                                        ", event types: " << m_betfairEventTypes.size()<<
-                                        ", total: " << node_count <<
-                                        std::endl;
+                        unsigned long node_count = m_markets.size() + m_event.size() + m_race.size() + m_group.size() + m_eventTypes.size();
+                        std::cout << "Parsed JSON in " << duration << ". "
+                                        "Markets: " << m_markets.size() <<
+                                  ", events: " << m_event.size() <<
+                                  ", races: " << m_race.size() <<
+                                  ", groups: " << m_group.size() <<
+                                  ", event types: " << m_eventTypes.size() <<
+                                  ", total: " << node_count <<
+                                  std::endl;
                     }
                 }
             });
@@ -68,28 +68,28 @@ void NavigationLoader::init() {
 }
 
 void NavigationLoader::importRoot() {
-    for (const BetfairEventType& item : m_betfairEventTypes) {
+    for (const Data::EventType& item : m_eventTypes) {
         importEventType(&item);
     }
 }
 
-void NavigationLoader::importEventType(const BetfairEventType* temp) {
+void NavigationLoader::importEventType(const Data::EventType* temp) {
     if (verbose)
-        std::cout << temp->get_name() << ' ' << temp->get_id() << std::endl;
-    BetfairEventType* p_item = m_betfair_data.eventTypeModel().getById(temp->get_id());
+        std::cout << temp->get_name() << ' ' << temp->id() << std::endl;
+    Data::EventType* p_item = m_dataModels.eventTypeModel().getById(temp->id());
     if (p_item == nullptr) {
-        p_item = &(m_betfair_data.eventTypeModel().add(*temp));
+        p_item = &(m_dataModels.eventTypeModel().add(*temp));
     } else {
         // do some updates
     }
 
-    for (const BetfairEvent* i : temp->getBetfairEvents()) {
+    for (const Data::Event* i : temp->getEvents()) {
         importEvent(i, 1, p_item);
     }
-    for (const BetfairGroup* i : temp->getBetfairGroups()) {
+    for (const Data::Group* i : temp->getGroups()) {
         importGroup(i, 1, p_item);
     }
-    for (const BetfairRace* i : temp->getBetfairRaces()) {
+    for (const Data::Race* i : temp->getRaces()) {
         importRace(i, 1, p_item);
     }
 }
@@ -97,12 +97,12 @@ void NavigationLoader::importEventType(const BetfairEventType* temp) {
 
 
 template <typename T>
-void NavigationLoader::importEvent(const BetfairEvent* temp, int indent, T* parent)  {
+void NavigationLoader::importEvent(const Data::Event* temp, int indent, T* parent)  {
     if (verbose)
-        std::cout << std::string(indent,' ') << '[' << temp->get_name() << "] " << temp->get_id() << std::endl;
-    BetfairEvent* p_item = m_betfair_data.eventModel().getById(temp->get_id());
+        std::cout << std::string(indent,' ') << '[' << temp->get_name() << "] " << temp->id() << std::endl;
+    Data::Event* p_item = m_dataModels.eventModel().getById(temp->id());
     if (p_item == nullptr) {
-        p_item = &(m_betfair_data.eventModel().add(*temp));
+        p_item = &(m_dataModels.eventModel().add(*temp));
         parent->addChild(p_item);
     } else {
         parent->addChild(p_item);
@@ -110,46 +110,46 @@ void NavigationLoader::importEvent(const BetfairEvent* temp, int indent, T* pare
 
 
 
-    for (BetfairEvent* i : temp->getBetfairEvents()) {
+    for (Data::Event* i : temp->getEvents()) {
         importEvent(i, indent + 1, p_item);
     }
-    for (BetfairGroup* i : temp->getBetfairGroups()) {
+    for (Data::Group* i : temp->getGroups()) {
         importGroup(i, indent + 1, p_item);
     }
-    for (BetfairMarket* i : temp->getBetfairMarkets()) {
+    for (Data::Market* i : temp->getMarkets()) {
         importMarket(i, indent + 1, p_item);
     }
 }
 
 
 template <typename T>
-void NavigationLoader::importGroup(const BetfairGroup* temp, int indent, T* parent)  {
+void NavigationLoader::importGroup(const Data::Group* temp, int indent, T* parent)  {
     if (verbose)
-        std::cout << std::string(indent,' ') << '(' << temp->get_name() << ") " << temp->get_id() << std::endl;
-    BetfairGroup* p_item = m_betfair_data.groupModel().getById(temp->get_id());
+        std::cout << std::string(indent,' ') << '(' << temp->get_name() << ") " << temp->id() << std::endl;
+    Data::Group* p_item = m_dataModels.groupModel().getById(temp->id());
     if (p_item == nullptr) {
-        p_item = &(m_betfair_data.groupModel().add(*temp));
+        p_item = &(m_dataModels.groupModel().add(*temp));
         parent->addChild(p_item);
     } else {
         parent->addChild(p_item);
     }
 
-    for (const BetfairEvent* i : temp->getBetfairEvents()) {
+    for (const Data::Event* i : temp->getEvents()) {
         importEvent(i, indent + 1, p_item);
     }
-    for (const BetfairGroup* i : temp->getBetfairGroups()) {
+    for (const Data::Group* i : temp->getGroups()) {
         importGroup(i, indent + 1, p_item);
     }
 }
 
 
 template <typename T>
-void NavigationLoader::importMarket(const BetfairMarket* temp, int indent, T* parent) {
+void NavigationLoader::importMarket(const Data::Market* temp, int indent, T* parent) {
     if (verbose)
-        std::cout << std::string(indent,' ') << '<' << temp->name() << "> " << temp->get_id() << std::endl;
-    BetfairMarket* p_item = m_betfair_data.marketModel().getById(temp->get_id());
+        std::cout << std::string(indent,' ') << '<' << temp->name() << "> " << temp->id() << std::endl;
+    Data::Market* p_item = m_dataModels.marketModel().getById(temp->id());
     if (p_item == nullptr) {
-        p_item = &(m_betfair_data.marketModel().add(*temp));
+        p_item = &(m_dataModels.marketModel().add(*temp));
         parent->addChild(p_item);
     } else {
         parent->addChild(p_item);
@@ -158,17 +158,17 @@ void NavigationLoader::importMarket(const BetfairMarket* temp, int indent, T* pa
 }
 
 template <typename T>
-void NavigationLoader::importRace(const BetfairRace* temp, int indent, T* parent) {
+void NavigationLoader::importRace(const Data::Race* temp, int indent, T* parent) {
     if (verbose)
-        std::cout << std::string(indent,' ') << '{' << temp->get_name() << "} " << temp->get_id() << std::endl;
-    BetfairRace* p_item = m_betfair_data.raceModel().getById(temp->get_id());
+        std::cout << std::string(indent,' ') << '{' << temp->get_name() << "} " << temp->id() << std::endl;
+    Data::Race* p_item = m_dataModels.raceModel().getById(temp->id());
     if (p_item == nullptr) {
-        p_item = &(m_betfair_data.raceModel().add(*temp));
+        p_item = &(m_dataModels.raceModel().add(*temp));
         parent->addChild(p_item);
     } else {
         parent->addChild(p_item);
     }
-    for (const BetfairMarket* i : temp->getBetfairMarkets()) {
+    for (const Data::Market* i : temp->getMarkets()) {
         importMarket(i, indent + 1, p_item);
     }
 }
@@ -183,8 +183,8 @@ void NavigationLoader::processJSONEventType(const Json::Value& json) {
     std::string name = json["name"].asString();
     std::string id = json["id"].asString();
 
-    m_betfairEventTypes.emplace_back(id, name);
-    BetfairEventType* item = &(m_betfairEventTypes.back());
+    m_eventTypes.emplace_back(id, name);
+    Data::EventType* item = &(m_eventTypes.back());
     for (const Json::Value& node : json["children"]) {
         if (node["type"].asString() == "EVENT")
             processJSONEvent(node, item);
@@ -200,8 +200,8 @@ void NavigationLoader::processJSONEvent(const Json::Value& json, T& parent) {
     std::string name = json["name"].asString();
     std::string id = json["id"].asString();
     std::string country_code = json["countryCode"].asString();
-    m_betfairEvent.emplace_back(id, name, country_code);
-    BetfairEvent* item = &(m_betfairEvent.back());
+    m_event.emplace_back(id, name, country_code);
+    Data::Event* item = &(m_event.back());
     parent->addChild(item);
     for (const Json::Value& node : json["children"]) {
         if (node["type"].asString() == "EVENT")
@@ -226,8 +226,8 @@ void NavigationLoader::processJSONRace(const Json::Value& json, T& parent) {
         race_number = json["raceNumber"].asString();
     std::string country_code = json["countryCode"].asString();
 
-    m_betfairRace.emplace_back(id, name, start_time, venue, race_number, country_code);
-    BetfairRace* item = &(m_betfairRace.back());
+    m_race.emplace_back(id, name, start_time, venue, race_number, country_code);
+    Data::Race* item = &(m_race.back());
     parent->addChild(item);
 
     for (const Json::Value& node : json["children"]) {
@@ -250,8 +250,8 @@ void NavigationLoader::processJSONMarket(const Json::Value& json, T& parent) {
         numberOfWinners = stoi(tmp);
     std::string name = json["name"].asString();
 
-    m_betfairMarkets.emplace_back(id, exchangeId, marketStartTime, marketType, numberOfWinners, name);
-    BetfairMarket* item = &(m_betfairMarkets.back());
+    m_markets.emplace_back(id, exchangeId, marketStartTime, marketType, numberOfWinners, name);
+    Data::Market* item = &(m_markets.back());
     parent->addChild(item);
 }
 
@@ -259,8 +259,8 @@ template <typename T>
 void NavigationLoader::processJSONGroup(const Json::Value& json, T& parent) {
     std::string name = json["name"].asString();
     std::string id = json["id"].asString();
-    m_betfairGroup.emplace_back(id,name);
-    BetfairGroup* item = &(m_betfairGroup.back());
+    m_group.emplace_back(id, name);
+    Data::Group* item = &(m_group.back());
     parent->addChild(item);
     for (const Json::Value& node : json["children"]) {
         if (node["type"].asString() == "EVENT")
@@ -270,7 +270,7 @@ void NavigationLoader::processJSONGroup(const Json::Value& json, T& parent) {
     }
 }
 
-NavigationLoader::NavigationLoader(BetfairData &betfair_data) : m_betfair_data(betfair_data), verbose(false) {
+NavigationLoader::NavigationLoader(DataModels &dataModels) : m_dataModels(dataModels), verbose(false) {
 
 }
 

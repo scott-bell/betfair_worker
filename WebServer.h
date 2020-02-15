@@ -2,18 +2,18 @@
 // Created by scott on 31/01/2020.
 //
 
-#ifndef BETFAIR_WORKER_WEBSERVER_H
-#define BETFAIR_WORKER_WEBSERVER_H
+#ifndef SXCLIENT_WEBSERVER_H
+#define SXCLIENT_WEBSERVER_H
 
 #include <3rd-party/SimpleWeb/server_http.hpp>
-#include "BetfairData.h"
+#include "DataModels.h"
 
 using HttpServer = SimpleWeb::Server<SimpleWeb::HTTP>;
 
 class WebServer {
-    BetfairData& bd;
+    DataModels& bd;
 public:
-    explicit WebServer(BetfairData& bd);
+    explicit WebServer(DataModels& bd);
     void init();
 
     template <typename T, typename C>
@@ -21,4 +21,4 @@ public:
 };
 
 
-#endif //BETFAIR_WORKER_WEBSERVER_H
+#endif //SXCLIENT_WEBSERVER_H

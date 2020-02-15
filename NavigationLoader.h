@@ -2,39 +2,39 @@
 // Created by scott on 17/01/2020.
 //
 
-#ifndef BETFAIR_WORKER_NAVIGATIONLOADER_H
-#define BETFAIR_WORKER_NAVIGATIONLOADER_H
+#ifndef SXCLIENT_NAVIGATIONLOADER_H
+#define SXCLIENT_NAVIGATIONLOADER_H
 
 #include <3rd-party/SimpleWeb/client_https.hpp>
 #include <chrono>
-#include <betfair_data/BetfairMarket.h>
-#include <betfair_data/BetfairEventType.h>
-#include <betfair_data/BetfairRace.h>
-#include <betfair_data/BetfairGroup.h>
-#include <betfair_data/BetfairEvent.h>
-#include "BetfairData.h"
+#include <data_models/Market.h>
+#include <data_models/EventType.h>
+#include <data_models/Race.h>
+#include <data_models/Group.h>
+#include <data_models/Event.h>
+#include "DataModels.h"
 
 using std::cout;
 using std::endl;
 
 class NavigationLoader {
-    std::vector<BetfairMarket> m_betfairMarkets;
-    std::vector<BetfairEventType> m_betfairEventTypes;
-    std::vector<BetfairRace> m_betfairRace;
-    std::vector<BetfairGroup> m_betfairGroup;
-    std::vector<BetfairEvent> m_betfairEvent;
-    BetfairData& m_betfair_data;
+    std::vector<Data::Market> m_markets;
+    std::vector<Data::EventType> m_eventTypes;
+    std::vector<Data::Race> m_race;
+    std::vector<Data::Group> m_group;
+    std::vector<Data::Event> m_event;
+    DataModels& m_dataModels;
     bool verbose;
     void importRoot();
-    void importEventType(const BetfairEventType* temp);
+    void importEventType(const Data::EventType* temp);
     template <typename T>
-    void importEvent(const BetfairEvent* temp, int indent, T* parent);
+    void importEvent(const Data::Event* temp, int indent, T* parent);
     template <typename T>
-    void importGroup(const BetfairGroup* temp, int indent, T* parent);
+    void importGroup(const Data::Group* temp, int indent, T* parent);
     template <typename T>
-    void importMarket(const BetfairMarket* temp, int indent, T* parent);
+    void importMarket(const Data::Market* temp, int indent, T* parent);
     template <typename T>
-    void importRace(const BetfairRace* temp, int indent, T* parent);
+    void importRace(const Data::Race* temp, int indent, T* parent);
     void processJSONRoot(const Json::Value& json);
     void processJSONEventType(const Json::Value& json);
     template <typename T>
@@ -46,9 +46,9 @@ class NavigationLoader {
     template <typename T>
     void processJSONRace(const Json::Value& json, T& parent);
 public:
-    explicit NavigationLoader(BetfairData& betfair_data);
+    explicit NavigationLoader(DataModels& dataModels);
     void init();
 };
 
 
-#endif //BETFAIR_WORKER_NAVIGATIONLOADER_H
+#endif //SXCLIENT_NAVIGATIONLOADER_H

@@ -2,8 +2,8 @@
 // Created by scott on 03/02/2020.
 //
 
-#ifndef BETFAIR_WORKER_APPLICATION_H
-#define BETFAIR_WORKER_APPLICATION_H
+#ifndef SXCLIENT_APPLICATION_H
+#define SXCLIENT_APPLICATION_H
 
 
 struct Application {
@@ -13,4 +13,4 @@ struct Application {
 };
 
 
-#endif //BETFAIR_WORKER_APPLICATION_H
+#endif //SXCLIENT_APPLICATION_H

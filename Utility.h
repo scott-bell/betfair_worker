@@ -2,8 +2,8 @@
 // Created by scott on 31/01/2020.
 //
 
-#ifndef BETFAIR_WORKER_UTILITY_H
-#define BETFAIR_WORKER_UTILITY_H
+#ifndef SXCLIENT_UTILITY_H
+#define SXCLIENT_UTILITY_H
 
 #include <vector>
 #include <string>
@@ -16,4 +16,4 @@ public:
 };
 
 
-#endif //BETFAIR_WORKER_UTILITY_H
+#endif //SXCLIENT_UTILITY_H
