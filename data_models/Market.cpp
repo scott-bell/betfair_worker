@@ -37,9 +37,9 @@ namespace Data {
         if (m_status.has_value())
             json["status"] = m_status.value();
         if (m_bettingType.has_value())
-            json["api_data"] = m_bettingType.value();
+            json["betting_type"] = m_bettingType.value();
         if (m_turnInPlayEnabled.has_value())
-            json["turnInPlayEnabled"] = m_turnInPlayEnabled.value();
+            json["turn_in_play_enabled"] = m_turnInPlayEnabled.value();
         json["market_type"] = m_marketType;
         if (m_regulator.has_value())
             json["regulator"] = m_regulator.value();

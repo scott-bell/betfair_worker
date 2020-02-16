@@ -35,7 +35,29 @@ void WebServer::addResource(HttpServer& server, const std::string& path, C& cont
                         << ss.str();
         }
     };
+
+    server.resource["^/" + path + "$"]["GET"] = [&](std::shared_ptr<HttpServer::Response> response, std::shared_ptr<HttpServer::Request> request) {
+        const auto& items = container.items();
+
+        std::stringstream ss;
+        {
+            Json::Value root;
+            root["success"] = true;
+            Json::Value nested;
+            for (auto item: items) {
+                nested.append(item.second.json());
+            }
+            root["items"] = nested;
+            Json::StyledWriter styledWriter;
+            ss << styledWriter.write(root);
+            *response   << "HTTP/1.1 200 OK\r\n"
+                        << "Content-Length: " << ss.str().length() << "\r\n"
+                        << "\r\n"
+                        << ss.str();
+        }
+    };
 }
+
 
 void WebServer::init() {
 

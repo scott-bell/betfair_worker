@@ -255,7 +255,6 @@ API::CurrentOrderSummaryReport APIClient::listCurrentOrders(std::optional<std::s
     ss << styledWriter.write(json);
     std::cout << ss.str();
 
-    client.io_service->reset();
     client.request(
             "POST",
             "/exchange/betting/json-rpc/v1",
@@ -274,7 +273,6 @@ API::CurrentOrderSummaryReport APIClient::listCurrentOrders(std::optional<std::s
             }
     );
     client.io_service->run();
-    client.io_service->stop();
 
     return result;
 }

@@ -12,7 +12,6 @@ namespace API {
             nested.append(s);
         }
         return nested;
-
     }
 
     Json::Value MarketFilter::json() const {

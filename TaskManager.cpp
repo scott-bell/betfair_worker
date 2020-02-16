@@ -26,13 +26,10 @@ void TaskManager::init() {
     {
         std::set<std::string> marketIds;
         for (const auto& i : bd.marketModel().items()) {
-            std::cout << i.second.id() << ' ' << i.second.marketType() << std::endl;
             if ((i.second.marketType() == "MATCH_ODDS") && (!i.second.bettingType().has_value())) {
                 marketIds.emplace(i.second.id());
             }
         }
-
-        std::cout << marketIds.size() << std::endl;
 
         std::set<std::string> marketIdsLimited;
         for (const auto& i : marketIds) {
@@ -48,6 +45,8 @@ void TaskManager::init() {
             marketIdsLimited.clear();
         }
 
+        getOrders();
+
         std::this_thread::sleep_for(std::chrono::milliseconds(5000));
     }
 }
@@ -58,7 +57,6 @@ void TaskManager::getOrders() {
         report = api.listCurrentOrders(std::nullopt, std::nullopt, "ALL", std::nullopt, std::nullopt, std::nullopt,
                                        "BY_PLACE_TIME", "EARLIEST_TO_LATEST", 0, 1000);
         for (const API::CurrentOrderSummary& summary : report.currentOrders) {
-            std::cout << summary.betId << std::endl;
             Data::Order *obj = bd.orderModel().getById(summary.betId);
             if (obj == nullptr) {
                 Data::Market* market = bd.marketModel().getById(summary.marketId);
