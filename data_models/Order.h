@@ -12,8 +12,6 @@
 #include "Runner.h"
 namespace Data {
     class Order : public DataObject {
-
-        //std::string m_betId;
         Market *m_market;
         Runner *m_runner;
         double m_handicap;

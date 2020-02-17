@@ -6,6 +6,7 @@
 #define SXCLIENT_WEBSERVER_H
 
 #include <3rd-party/SimpleWeb/server_http.hpp>
+#include <data_models/Filter.h>
 #include "DataModels.h"
 
 using HttpServer = SimpleWeb::Server<SimpleWeb::HTTP>;
@@ -15,8 +16,7 @@ class WebServer {
 public:
     explicit WebServer(DataModels& bd);
     void init();
-
-    template <typename T, typename C>
+    template <typename T, typename C, typename F>
     void addResource(HttpServer& server, const std::string &path, C& container);
 };
 

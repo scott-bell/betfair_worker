@@ -3,10 +3,11 @@
 //
 
 #include <jsoncpp/json/json.h>
+#include <data_models/MarketFilter.h>
 #include "WebServer.h"
 #include "Utility.h"
 
-template <typename T, typename C>
+template <typename T, typename C, typename F>
 void WebServer::addResource(HttpServer& server, const std::string& path, C& container) {
     server.resource["^/" + path + "/([0-9.]+)"]["GET"] = [&](std::shared_ptr<HttpServer::Response> response, std::shared_ptr<HttpServer::Request> request) {
         std::string key = Utility::split(request->path,'/')[2];
@@ -39,15 +40,40 @@ void WebServer::addResource(HttpServer& server, const std::string& path, C& cont
     server.resource["^/" + path + "$"]["GET"] = [&](std::shared_ptr<HttpServer::Response> response, std::shared_ptr<HttpServer::Request> request) {
         const auto& items = container.items();
 
+        Json::Value req;
+        std::stringstream in;
+        std::string body = request->content.string();
+        if (!body.empty()) {
+            in << body;
+            in >> req;
+        }
+
         std::stringstream ss;
         {
             Json::Value root;
             root["success"] = true;
             Json::Value nested;
+            int totalCount = 0;
+            unsigned int maxResults = 100;
+            F filter;
+
+
+            if (req.isMember("filter")) {
+                filter = F(req["filter"]);
+            }
+            if (req.isMember("max_results")) {
+                maxResults = req["max_results"].asInt();
+            }
+
             for (auto item: items) {
-                nested.append(item.second.json());
+                totalCount++;
+                if (nested.size() < maxResults) {
+                    if (filter.match(item.second))
+                        nested.append(item.second.json());
+                }
             }
             root["items"] = nested;
+            root["total_count"] = totalCount;
             Json::StyledWriter styledWriter;
             ss << styledWriter.write(root);
             *response   << "HTTP/1.1 200 OK\r\n"
@@ -63,13 +89,13 @@ void WebServer::init() {
 
     HttpServer server;
     server.config.port = 8080;
-    addResource<Data::Market,DataModel<Data::Market>> (server, "market", bd.marketModel());
-    addResource<Data::Runner,DataModel<Data::Runner>> (server, "runner", bd.runnerModel());
-    addResource<Data::Event,DataModel<Data::Event>> (server, "event", bd.eventModel());
-    addResource<Data::Race,DataModel<Data::Race>> (server, "race", bd.raceModel());
-    addResource<Data::Group,DataModel<Data::Group>> (server, "group", bd.groupModel());
-    addResource<Data::EventType,DataModel<Data::EventType>> (server, "eventtype", bd.eventTypeModel());
-    addResource<Data::Order,DataModel<Data::Order>> (server, "order", bd.orderModel());
+    addResource<Data::Market,DataModel<Data::Market>,MarketFilter> (server, "market", bd.marketModel());
+    addResource<Data::Runner,DataModel<Data::Runner>,Filter> (server, "runner", bd.runnerModel());
+    addResource<Data::Event,DataModel<Data::Event>,Filter> (server, "event", bd.eventModel());
+    addResource<Data::Race,DataModel<Data::Race>,Filter> (server, "race", bd.raceModel());
+    addResource<Data::Group,DataModel<Data::Group>,Filter> (server, "group", bd.groupModel());
+    addResource<Data::EventType,DataModel<Data::EventType>,Filter> (server, "eventtype", bd.eventTypeModel());
+    addResource<Data::Order,DataModel<Data::Order>,Filter> (server, "order", bd.orderModel());
 
     std::thread server_thread([&server]() {
         // Start server

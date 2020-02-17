@@ -10,6 +10,7 @@
 #include <optional>
 #include <jsoncpp/json/json.h>
 #include "DataObject.h"
+#include "Filter.h"
 
 namespace Data {
 
@@ -131,71 +132,38 @@ namespace Data {
         void runnersVoidable(bool b);
 
         void version(long l);
-
         [[nodiscard]] const std::string &exchangeId() const;
-
         [[nodiscard]] const std::string &startTime() const;
-
         [[nodiscard]] int numberOfWinners() const;
-
         [[nodiscard]] const std::string &name() const;
-
         [[nodiscard]] std::optional<bool> persistenceEnabled() const;
-
         [[nodiscard]] std::optional<bool> bspMarket() const;
-
         [[nodiscard]] const std::optional<std::string> &suspendTime() const;
-
         [[nodiscard]] const std::optional<std::string> &settleTime() const;
-
         [[nodiscard]] const std::optional<std::string> &bettingType() const;
-
         [[nodiscard]] std::optional<bool> turnInPlayEnabled() const;
-
         [[nodiscard]] const std::string &marketType() const;
-
         [[nodiscard]] const std::optional<std::string> &regulator() const;
-
         [[nodiscard]] std::optional<double> marketBaseRate() const;
-
         [[nodiscard]] std::optional<bool> discountAllowed() const;
-
         [[nodiscard]] const std::optional<std::string> &wallet() const;
-
         [[nodiscard]] const std::optional<std::string> &rules() const;
-
         [[nodiscard]] std::optional<bool> rulesHasDate() const;
-
         [[nodiscard]] std::optional<double> eachWayDivisor() const;
-
         [[nodiscard]] const std::optional<std::string> &clarifications() const;
-
         [[nodiscard]] const std::optional<std::string> &raceType() const;
-
         [[nodiscard]] std::optional<bool> isMarketDateDelayed() const;
-
         [[nodiscard]] const std::optional<std::string> &status() const;
-
         [[nodiscard]] std::optional<int> betDelay() const;
-
         [[nodiscard]] std::optional<bool> bspReconciled() const;
-
         [[nodiscard]] std::optional<bool> complete() const;
-
         [[nodiscard]] std::optional<bool> inplay() const;
-
         [[nodiscard]] std::optional<int> numberOfRunners() const;
-
         [[nodiscard]] std::optional<int> numberOfActiveRunners() const;
-
         [[nodiscard]] const std::optional<std::string> &lastMatchTime() const;
-
         [[nodiscard]] std::optional<double> totalMatched() const;
-
         [[nodiscard]] std::optional<double> totalAvailable() const;
-
         [[nodiscard]] std::optional<bool> runnersVoidable() const;
-
         [[nodiscard]] std::optional<long> version() const;
 
     };

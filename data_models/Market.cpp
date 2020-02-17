@@ -23,7 +23,7 @@ namespace Data {
         json["id"] = m_id;
         json["start_time"] = m_startTime;
         json["name"] = m_name;
-        json["type"] = m_marketType;
+	json["type"] = m_marketType;
         json["exchange_id"] = m_exchangeId;
         json["number_of_winners"] = m_numberOfWinners;
         if (m_persistenceEnabled.has_value())
@@ -40,7 +40,6 @@ namespace Data {
             json["betting_type"] = m_bettingType.value();
         if (m_turnInPlayEnabled.has_value())
             json["turn_in_play_enabled"] = m_turnInPlayEnabled.value();
-        json["market_type"] = m_marketType;
         if (m_regulator.has_value())
             json["regulator"] = m_regulator.value();
         if (m_marketBaseRate.has_value())
