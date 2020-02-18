@@ -92,11 +92,8 @@ namespace Data {
     }
 
     MarketRunner* Market::marketRunner(const Runner& runner) {
-        // TODO
-        for (auto& m : m_marketRunners) {
-            if (m.second.runner() == runner) {
-                return &m.second;
-            }
+        if (m_marketRunners.count(runner) > 0) {
+            return &m_marketRunners.at(runner);
         }
         return nullptr;
     }

@@ -9,7 +9,7 @@
 
 template <typename T, typename C, typename F>
 void WebServer::addResource(HttpServer& server, const std::string& path, C& container) {
-    server.resource["^/" + path + "/([0-9.]+)"]["GET"] = [&](std::shared_ptr<HttpServer::Response> response, std::shared_ptr<HttpServer::Request> request) {
+    server.resource["^/" + path + "/([0-9.:]+)"]["GET"] = [&](std::shared_ptr<HttpServer::Response> response, std::shared_ptr<HttpServer::Request> request) {
         std::string key = Utility::split(request->path,'/')[2];
         T* item = container.getById(key);
 
