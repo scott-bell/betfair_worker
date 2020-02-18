@@ -15,6 +15,13 @@ class Runner  : public DataObject {
 public:
     Json::Value json();
     Runner(std::string id, std::string name);
+    const std::string& name();
+    bool operator < (const Runner& rhs) const {
+        return id() < rhs.id();
+    }
+    bool operator == (const Runner& rhs) const {
+        return id() == rhs.id();
+    }
 };
 
 }

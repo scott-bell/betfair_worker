@@ -145,6 +145,12 @@ void TaskManager::getMarketCatalogue(const std::set<std::string>& marketIds) {
                     if (runnerObj == nullptr) {
                         runnerObj = &(bd.runnerModel().add(Data::Runner(std::to_string(rg.selectionId), rg.runnerName)));
                     }
+                    std::string mrId = obj->id() + ":" + runnerObj->id();
+                    Data::MarketRunner *marketRunnerObj = bd.marketRunnerModel().getById(mrId);
+                    if (marketRunnerObj == nullptr) {
+                        marketRunnerObj = &(bd.marketRunnerModel().add(Data::MarketRunner(mrId, *runnerObj, rg.handicap, rg.sortPriority)));
+                        obj->addMarketRunner(*marketRunnerObj);
+                    }
                 }
             }
 

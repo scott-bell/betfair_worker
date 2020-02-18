@@ -11,15 +11,19 @@
 #include <jsoncpp/json/json.h>
 #include "DataObject.h"
 #include "Filter.h"
+#include "MarketRunner.h"
+#include "Runner.h"
 
 namespace Data {
+
+    class MarketRunner;
 
     class Market : public DataObject {
 
         //                                                                   MarketBook      MarketCatalogue
-        std::string m_exchangeId;                   //
-        std::string m_startTime;                    //       X                  X
-        int m_numberOfWinners;              //       X
+        std::string m_exchangeId;                                      //
+        std::string m_startTime;                                        //       X                  X
+        int m_numberOfWinners;                                          //       X
         std::string m_name;                         //                          X
         std::optional<bool> m_persistenceEnabled;           //                          X
         std::optional<bool> m_bspMarket;                    //                          X
@@ -56,6 +60,7 @@ namespace Data {
         //MarketLineRangeInfo m_lineRangeInfo; // TODO
         //PriceLadderDescription m_PriceLadderDescription; // TODO
 
+        std::map<Runner, MarketRunner> m_marketRunners;
 
     public:
         Market(std::string id, std::string exchange_id, std::string market_start_time,
@@ -63,74 +68,43 @@ namespace Data {
 
         Market() = delete;
 
+        MarketRunner* marketRunner(const Runner& runner);
+        void addMarketRunner(MarketRunner& marketRunner);
+
         Json::Value json() override;
-
         void exchangeId(std::string &s);
-
         void startTime(const std::string &_startTime);
-
         void numberOfWinners(int i);
-
         void name(const std::string &name);
-
         void persistenceEnabled(bool _persistenceEnabled);
-
         void bspMarket(bool _bspMarket);
-
         void suspendTime(const std::string &_suspendTime);
-
         void settleTime(const std::string &_settleTime);
-
         void bettingType(const std::string &_bettingType);
-
         void turnInPlayEnabled(bool b);
-
         void marketType(const std::string &s);
-
         void regulator(const std::string &s);
-
         void marketBaseRate(double d);
-
         void discountAllowed(bool b);
-
         void wallet(const std::string &s);
-
         void rules(const std::string &s);
-
         void rulesHasDate(bool b);
-
         void eachWayDivisor(double d);
-
         void clarifications(const std::string &s);
-
         void raceType(const std::string &s);
-
         void isMarketDateDelayed(bool b);
-
         void status(const std::string &status);
-
         void betDelay(int i);
-
         void bspReconciled(bool b);
-
         void complete(bool b);
-
         void inplay(bool b);
-
         void numberOfRunners(int i);
-
         void numberOfActiveRunners(int i);
-
         void lastMatchTime(const std::string &s);
-
         void totalMatched(double d);
-
         void totalAvailable(double d);
-
         void crossMatching(bool b);
-
         void runnersVoidable(bool b);
-
         void version(long l);
         [[nodiscard]] const std::string &exchangeId() const;
         [[nodiscard]] const std::string &startTime() const;

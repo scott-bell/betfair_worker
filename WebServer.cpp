@@ -96,6 +96,7 @@ void WebServer::init() {
     addResource<Data::Group,DataModel<Data::Group>,Filter> (server, "group", bd.groupModel());
     addResource<Data::EventType,DataModel<Data::EventType>,Filter> (server, "eventtype", bd.eventTypeModel());
     addResource<Data::Order,DataModel<Data::Order>,Filter> (server, "order", bd.orderModel());
+    addResource<Data::MarketRunner,DataModel<Data::MarketRunner>,Filter> (server, "marketrunner", bd.marketRunnerModel());
 
     std::thread server_thread([&server]() {
         // Start server

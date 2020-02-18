@@ -31,4 +31,8 @@ DataModel<Data::Order>& DataModels::orderModel() {
     return m_orderModel;
 }
 
+DataModel<Data::MarketRunner> &DataModels::marketRunnerModel() {
+    return m_marketRunnerModel;
+}
+
 

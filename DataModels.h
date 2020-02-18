@@ -26,6 +26,7 @@ class DataModels {
     DataModel<Data::Event>         m_eventModel = DataModel<Data::Event>{5000};
     DataModel<Data::Runner>        m_runnerModel = DataModel<Data::Runner>{100000};
     DataModel<Data::Order>         m_orderModel = DataModel<Data::Order>{1000};
+    DataModel<Data::MarketRunner>  m_marketRunnerModel = DataModel<Data::MarketRunner>{1000000};
 public:
     DataModel<Data::Market>& marketModel();
     DataModel<Data::EventType>& eventTypeModel();
@@ -34,6 +35,7 @@ public:
     DataModel<Data::Runner>& runnerModel();
     DataModel<Data::Race>& raceModel();
     DataModel<Data::Order>& orderModel();
+    DataModel<Data::MarketRunner>& marketRunnerModel();
     DataModels(): m_verbose(false) {
     }
 

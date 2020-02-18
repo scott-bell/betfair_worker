@@ -82,8 +82,32 @@ namespace Data {
             json["runners_voidable"] = m_runnersVoidable.value();
         if (m_version.has_value())
             json["version"] = std::to_string(m_version.value());
+        Json::Value runners;
+        for (auto& a : m_marketRunners) {
+            runners.append(a.second.json());
+        }
+        json["runners"] = runners;
 
         return json;
+    }
+
+    MarketRunner* Market::marketRunner(const Runner& runner) {
+        // TODO
+        for (auto& m : m_marketRunners) {
+            if (m.second.runner() == runner) {
+                return &m.second;
+            }
+        }
+        return nullptr;
+    }
+
+    void Market::addMarketRunner(MarketRunner& marketRunner) {
+        m_marketRunners.insert(
+                std::pair<Runner,MarketRunner> (
+                        marketRunner.runner(),
+                        marketRunner
+                )
+        );
     }
 
     void Market::status(const std::string &_status) {
@@ -291,5 +315,6 @@ namespace Data {
     const std::optional<std::string> &Market::status() const {
         return m_status;
     }
+
 
 }

@@ -18,4 +18,8 @@ namespace Data {
         return json;
     }
 
+    const std::string &Runner::name() {
+        return m_name;
+    }
+
 }
