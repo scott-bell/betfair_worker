@@ -149,7 +149,7 @@ void TaskManager::getMarketCatalogue(const std::set<std::string>& marketIds) {
                     Data::MarketRunner *marketRunnerObj = bd.marketRunnerModel().getById(mrId);
                     if (marketRunnerObj == nullptr) {
                         marketRunnerObj = &(bd.marketRunnerModel().add(Data::MarketRunner(mrId, *runnerObj, rg.handicap, rg.sortPriority)));
-                        obj->addMarketRunner(*marketRunnerObj);
+                        obj->addMarketRunner(marketRunnerObj);
                     }
                 }
             }
@@ -206,9 +206,49 @@ void TaskManager::getMarketBook(const std::set<std::string> &marketIds) {
                     bfItem->runnersVoidable(b.runnersVoidable.value());
                 if (b.version.has_value())
                     bfItem->version(b.version.value());
+                if (b.runners.has_value()) {
+                    for (const API::Runner& runner : b.runners.value()) {
+                        Data::Runner *runnerObj = bd.runnerModel().getById(std::to_string(runner.selectionId));
+                        if (runnerObj != nullptr) {
+                            std::string mrId = bfItem->id() + ":" + runnerObj->id();
+                            Data::MarketRunner *marketRunnerObj = bd.marketRunnerModel().getById(mrId);
+                            if (marketRunnerObj != nullptr) {
+                                marketRunnerObj->status(runner.status);
+                                marketRunnerObj->handicap(runner.handicap);
+                                marketRunnerObj->adjustmentFactor(runner.adjustmentFactor);
+                                if (runner.lastPriceTraded.has_value())
+                                    marketRunnerObj->lastPriceTraded(runner.lastPriceTraded.value());
+                                if (runner.totalMatched.has_value())
+                                    marketRunnerObj->totalMatched(runner.totalMatched.value());
+                                if (runner.removalDate.has_value())
+                                    marketRunnerObj->removalDate(runner.removalDate.value());
+                                if (runner.ex.has_value()) {
+                                    if (runner.ex.value().availableToBack.has_value()) {
+                                        std::vector<std::tuple<double,double>> bp;
+                                        std::vector<std::tuple<double,double>> lp;
+                                        std::vector<std::tuple<double,double>> tp;
+                                        for (const API::PriceSize& pz : runner.ex.value().availableToBack.value()) {
+                                            std::tuple<double,double> pzt = {pz.price,pz.size};
+                                            bp.push_back(pzt);
+                                        }
+                                        for (const API::PriceSize& pz : runner.ex.value().availableToLay.value()) {
+                                            std::tuple<double,double> pzt = {pz.price,pz.size};
+                                            lp.push_back(pzt);
+                                        }
+                                        for (const API::PriceSize& pz : runner.ex.value().tradedVolume.value()) {
+                                            std::tuple<double,double> pzt = {pz.price,pz.size};
+                                            tp.push_back(pzt);
+                                        }
+                                        marketRunnerObj->backPrices(bp);
+                                        marketRunnerObj->layPrices(lp);
+                                        marketRunnerObj->tradedPrices(tp);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
-
 }
-

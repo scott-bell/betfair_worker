@@ -60,7 +60,7 @@ namespace Data {
         //MarketLineRangeInfo m_lineRangeInfo; // TODO
         //PriceLadderDescription m_PriceLadderDescription; // TODO
 
-        std::map<Runner, MarketRunner> m_marketRunners;
+        std::vector<MarketRunner*> m_marketRunners;
 
     public:
         Market(std::string id, std::string exchange_id, std::string market_start_time,
@@ -68,8 +68,7 @@ namespace Data {
 
         Market() = delete;
 
-        MarketRunner* marketRunner(const Runner& runner);
-        void addMarketRunner(MarketRunner& marketRunner);
+        void addMarketRunner(MarketRunner *marketRunner);
 
         Json::Value json() override;
         void exchangeId(std::string &s);

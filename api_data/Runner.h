@@ -20,7 +20,7 @@ namespace API {
         long selectionId;
         double handicap;
         std::string status;
-        std::optional<double> adjustmentFactor;
+        double adjustmentFactor;
         std::optional<double> lastPriceTraded;
         std::optional<double> totalMatched;
         std::optional<std::string> removalDate;

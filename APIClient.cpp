@@ -342,7 +342,6 @@ std::forward_list<API::MarketBook> APIClient::listMarketBook(const std::forward_
     ss << styledWriter.write(json);
     std::cout << ss.str() << std::endl;
 
-    client.io_service->reset();
     client.request(
             "POST",
             "/exchange/betting/json-rpc/v1",
@@ -369,7 +368,6 @@ std::forward_list<API::MarketBook> APIClient::listMarketBook(const std::forward_
             }
     );
     client.io_service->run();
-    client.io_service->stop();
 
     return items;
 }

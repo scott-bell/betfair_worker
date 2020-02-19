@@ -18,7 +18,7 @@ namespace API {
             removalDate = json["removalDate"].asString();
         if (json.isMember("sp"))
             sp = StartingPrices(json["sp"]);
-        if (json.isMember("sp"))
+        if (json.isMember("ex"))
             ex = ExchangePrices(json["ex"]);
         if (json.isMember("orders")) {
             const Json::Value result = json["orders"];
