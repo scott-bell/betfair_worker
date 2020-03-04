@@ -22,6 +22,7 @@
 #include <api_data/ReplaceExecutionReport.h>
 #include <api_data/MarketFilter.h>
 #include <set>
+#include <api_data/ClearedOrderSummaryReport.h>
 
 
 class APIClient {
@@ -33,6 +34,20 @@ public:
     std::forward_list<API::MarketCatalogue>  listMarketCatalogue(const API::MarketFilter &filter, const std::set<std::string>& marketProjection, const std::string& sort,int maxResults, const std::string& locale);
     API::PlaceExecutionReport                placeOrders(const std::string& marketId, const std::vector<API::PlaceInstruction>& instructions, std::optional<std::string> customerRef,std::optional<API::MarketVersion> marketVersion, std::optional<std::string> customerStrategyRef, std::optional<bool> async);
     std::forward_list<API::MarketBook>       listMarketBook(const std::forward_list<std::string>& marketIds, std::optional<API::PriceProjection> priceProjection = std::nullopt, std::optional<std::string> orderProjection = std::nullopt, std::optional<std::string> matchProjection = std::nullopt, std::optional<bool> includeOverallPosition = std::nullopt, std::optional<bool> partitionMatchedByStrategyRef = std::nullopt, std::optional<std::vector<std::string>> customerStrategyRefs = std::nullopt, std::optional<std::string> currencyCode = std::nullopt, std::optional<std::string> locale = std::nullopt, std::optional<std::string> matchedSince = std::nullopt, std::optional<std::vector<std::string>> betIds = std::nullopt);
+    API::ClearedOrderSummaryReport           listClearedOrders( const std::string& betStatus,
+                                                                std::optional<std::set<std::string>> eventTypeIds,
+                                                                std::optional<std::set<std::string>> eventIds,
+                                                                std::optional<std::set<std::string>> marketIds,
+                                                                std::optional<std::set<std::string>> runnerIds,
+                                                                std::optional<std::vector<std::string>> betIds,
+                                                                std::optional<std::string> side,
+                                                                std::optional<API::TimeRange> timeRange,
+                                                                std::optional<std::string> groupBy,
+                                                                std::optional<bool> includeItemDescription,
+                                                                std::optional<std::string> locale,
+                                                                std::optional<int> fromRecord,
+                                                                std::optional<int> recordCount
+    );
     API::CurrentOrderSummaryReport           listCurrentOrders(std::optional<std::set<std::string>> betIds, std::optional<std::set<std::string>> marketIds,
                                                             std::optional<std::string> orderProjection,
                                                             std::optional<std::set<std::string>> customerOrderRefs,

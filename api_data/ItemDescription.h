@@ -7,6 +7,7 @@
 
 #include <string>
 #include <optional>
+#include <jsoncpp/json/value.h>
 
 namespace API {
     struct ItemDescription {
@@ -18,6 +19,9 @@ namespace API {
         std::optional<std::string> runnerDesc;
         std::optional<int> numberOfWinners;
         std::optional<double> eachWayDivisor;
+
+        explicit ItemDescription(Json::Value json);
+
     };
 }
 

@@ -181,7 +181,110 @@ API::CancelExecutionReport APIClient::cancelOrders(std::optional<std::string> ma
     return result;
 }
 
+API::ClearedOrderSummaryReport
+APIClient::listClearedOrders(const std::string& betStatus, std::optional<std::set<std::string>> eventTypeIds,
+                             std::optional<std::set<std::string>> eventIds,
+                             std::optional<std::set<std::string>> marketIds,
+                             std::optional<std::set<std::string>> runnerIds,
+                             std::optional<std::vector<std::string>> betIds, std::optional<std::string> side,
+                             std::optional<API::TimeRange> timeRange, std::optional<std::string> groupBy,
+                             std::optional<bool> includeItemDescription, std::optional<std::string> locale,
+                             std::optional<int> fromRecord, std::optional<int> recordCount)
+{
+    HttpsClient client(url, true);
+    API::ClearedOrderSummaryReport result;
 
+    Json::Value json;
+    json["id"] = 1;
+    json["jsonrpc"] = "2.0";
+    json["method"] = "SportsAPING/v1.0/listClearedOrders";
+    Json::Value jsonParams;
+
+    jsonParams["betStatus"] = betStatus;
+
+    if (eventTypeIds.has_value())
+    {
+        Json::Value nested;
+        for (const auto& s : eventTypeIds.value()) {
+            nested.append(s);
+        }
+        jsonParams["betIds"] = nested;
+    }
+    if (eventIds.has_value())
+    {
+        Json::Value nested;
+        for (const auto& s : eventIds.value()) {
+            nested.append(s);
+        }
+        jsonParams["eventIds"] = nested;
+    }
+    if (marketIds.has_value())
+    {
+        Json::Value nested;
+        for (const auto& s : marketIds.value()) {
+            nested.append(s);
+        }
+        jsonParams["marketIds"] = nested;
+    }
+    if (runnerIds.has_value())
+    {
+        Json::Value nested;
+        for (const auto& s : runnerIds.value()) {
+            nested.append(s);
+        }
+        jsonParams["runnerIds"] = nested;
+    }
+    if (betIds.has_value())
+    {
+        Json::Value nested;
+        for (const auto& s : betIds.value()) {
+            nested.append(s);
+        }
+        jsonParams["betIds"] = nested;
+    }
+    if (side.has_value())
+        jsonParams["side"] = side.value();
+    if (timeRange.has_value())
+        jsonParams["timeRange"] = timeRange.value().json();
+    if (groupBy.has_value())
+        jsonParams["groupBy"] = groupBy.value();
+    if (includeItemDescription.has_value())
+        jsonParams["includeItemDescription"] = includeItemDescription.value();
+    if (locale.has_value())
+        jsonParams["locale"] = locale.value();
+    if (side.has_value())
+        jsonParams["side"] = side.value();
+    if (fromRecord.has_value())
+        jsonParams["fromRecord"] = fromRecord.value();
+    if (recordCount.has_value())
+        jsonParams["recordCount"] = recordCount.value();
+
+    json["params"] = jsonParams;
+    Json::StyledWriter styledWriter;
+    std::stringstream ss;
+    ss << styledWriter.write(json);
+    std::cout << ss.str();
+
+    client.request(
+            "POST",
+            "/exchange/betting/json-rpc/v1",
+            ss.str(),
+            header,
+            [&](const std::shared_ptr<HttpsClient::Response>& response,
+                const SimpleWeb::error_code)
+            {
+                Json::Value root;
+                response->content >> root;
+                if (root.isMember("error")) {
+                    throw API::APINGException(root["error"]["data"]["APINGException"]);
+                }
+                result = API::ClearedOrderSummaryReport(root["result"]);
+            }
+    );
+    client.io_service->run();
+
+    return result;
+}
 
 
 API::CurrentOrderSummaryReport APIClient::listCurrentOrders(std::optional<std::set<std::string>> betIds,
@@ -508,5 +611,3 @@ APIClient::APIClient():
     header.emplace("X-Application", Authentication::applicationId);
     header.emplace("X-Authentication", Authentication::token);
 }
-
-

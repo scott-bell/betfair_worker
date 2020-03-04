@@ -7,6 +7,7 @@
 
 #include <string>
 #include <optional>
+#include <jsoncpp/json/value.h>
 #include "ItemDescription.h"
 
 namespace API {
@@ -36,6 +37,9 @@ namespace API {
         std::optional<double> sizeCancelled;
         std::optional<bool> priceReduced;
         std::optional<ItemDescription> itemDescription;
+
+        explicit ClearedOrderSummary(Json::Value json);
+
     };
 }
 
