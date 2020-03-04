@@ -45,6 +45,7 @@ namespace Data {
               std::optional<std::string> customOrderRef, std::optional<std::string> customerStrategyRef);
 
         void sizeRemaining(double size);
+        double sizeRemaining();
 
         void sizeMatched(double size);
 
@@ -55,6 +56,7 @@ namespace Data {
         void sizeVoided(double size);
 
         void status(std::string status);
+        std::string status() const;
 
         void persistenceType(std::string s);
 

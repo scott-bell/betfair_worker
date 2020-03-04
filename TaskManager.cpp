@@ -52,12 +52,19 @@ void TaskManager::init() {
 }
 
 void TaskManager::getOrders() {
+    std::vector<std::string> existingIds;
+    std::vector<std::string> seenIds;
+    for (const auto& item : bd.orderModel().items()) {
+        if (item.second.status() != "EXECUTION_COMPLETE")
+            existingIds.push_back(item.second.id());
+    }
     {
         API::CurrentOrderSummaryReport report;
         report = api.listCurrentOrders(std::nullopt, std::nullopt, "ALL", std::nullopt, std::nullopt, std::nullopt,
                                        "BY_PLACE_TIME", "EARLIEST_TO_LATEST", 0, 1000);
         for (const API::CurrentOrderSummary& summary : report.currentOrders) {
             Data::Order *obj = bd.orderModel().getById(summary.betId);
+            seenIds.push_back(summary.betId);
             if (obj == nullptr) {
                 Data::Market* market = bd.marketModel().getById(summary.marketId);
                 Data::Runner* runner = bd.runnerModel().getById(std::to_string(summary.selectionId));
@@ -65,7 +72,6 @@ void TaskManager::getOrders() {
                     std::cout << "Cannot find market with id " << summary.marketId << std::endl;
                 else if (runner == nullptr) {
                     std::cout << "Cannot find runner with id " << std::to_string(summary.selectionId) << " for market " << summary.marketId << std::endl;
-                    //m_marketIds.insert(summary.marketId);
                 }
                 else {
                     auto o = Data::Order(
@@ -104,7 +110,24 @@ void TaskManager::getOrders() {
             }
         }
     }
-
+    std::vector<std::string> missingOrderIds;
+    std::sort(existingIds.begin(), existingIds.end());
+    std::sort(seenIds.begin(), seenIds.end());
+    std::set_difference(
+        existingIds.begin(), existingIds.end(),
+        seenIds.begin(), seenIds.end(),
+        std::back_inserter(missingOrderIds)
+    );
+    if (!missingOrderIds.empty())
+    {
+        for (const std::string& id : missingOrderIds)
+        {
+            Data::Order *obj = bd.orderModel().getById(id);
+            obj->sizeCancelled(obj->sizeRemaining());
+            obj->sizeRemaining(0.0);
+            obj->status("EXECUTION_COMPLETE");
+        }
+    }
 }
 
 void TaskManager::getMarketCatalogue(const std::set<std::string>& marketIds) {

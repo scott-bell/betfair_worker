@@ -64,8 +64,16 @@ namespace Data {
         m_status = status;
     }
 
+    std::string Order::status() const {
+        return m_status;
+    }
+
     void Order::sizeRemaining(double size) {
         m_sizeRemaining = size;
+    }
+
+    double Order::sizeRemaining() {
+        return m_sizeRemaining;
     }
 
     void Order::sizeCancelled(double size) {
