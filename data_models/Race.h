@@ -13,6 +13,8 @@
 
 namespace Data {
 
+    class Market;
+
     class Race : public DataObject {
         std::string m_name;
         std::string m_start_time;
@@ -43,6 +45,8 @@ namespace Data {
         const std::vector<Market *> &getMarkets() const;
 
     };
+    inline bool operator==(const Race& lhs, const Race& rhs){ return lhs.id() == rhs.id();  }
+    inline bool operator!=(const Race& lhs, const Race& rhs){ return !(lhs == rhs); }
 }
 
 #endif //SXCLIENT_RACE_H

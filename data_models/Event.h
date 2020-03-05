@@ -16,6 +16,7 @@
 namespace Data {
 
     class Group;
+    class Market;
 
     class Event : public DataObject {
         std::string m_name;
@@ -43,6 +44,8 @@ namespace Data {
         const std::vector<Group *> &getGroups() const;
         const std::vector<Market *> &getMarkets() const;
     };
+    inline bool operator==(const Event& lhs, const Event& rhs){ return lhs.id() == rhs.id();  }
+    inline bool operator!=(const Event& lhs, const Event& rhs){ return !(lhs == rhs); }
 
 }
 #endif //SXCLIENT_DATA_EVENT_H

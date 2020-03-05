@@ -24,6 +24,7 @@ namespace Data {
 
     void Event::addChild(Market *item) {
         m_children_market.push_back(item);
+        item->parentEvent(this);
     }
 
     const std::string &Event::get_name() const {

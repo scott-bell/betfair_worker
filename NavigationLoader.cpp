@@ -150,11 +150,8 @@ void NavigationLoader::importMarket(const Data::Market* temp, int indent, T* par
     Data::Market* p_item = m_dataModels.marketModel().getById(temp->id());
     if (p_item == nullptr) {
         p_item = &(m_dataModels.marketModel().add(*temp));
-        parent->addChild(p_item);
-    } else {
-        parent->addChild(p_item);
     }
-
+    parent->addChild(p_item);
 }
 
 template <typename T>
@@ -231,8 +228,9 @@ void NavigationLoader::processJSONRace(const Json::Value& json, T& parent) {
     parent->addChild(item);
 
     for (const Json::Value& node : json["children"]) {
-        if (node["type"].asString() == "MARKET")
+        if (node["type"].asString() == "MARKET") {
             processJSONMarket(node, item);
+        }
     }
 }
 
@@ -244,13 +242,12 @@ void NavigationLoader::processJSONMarket(const Json::Value& json, T& parent) {
     std::string marketType = json["marketType"].asString();
     std::string tmp = json["numberOfWinners"].asString();
 
-
     int numberOfWinners = 0;
     if (!tmp.empty())
         numberOfWinners = stoi(tmp);
     std::string name = json["name"].asString();
 
-    m_markets.emplace_back(id, exchangeId, marketStartTime, marketType, numberOfWinners, name);
+    m_markets.emplace_back(id, exchangeId, marketStartTime, marketType, numberOfWinners, name, parent);
     Data::Market* item = &(m_markets.back());
     parent->addChild(item);
 }

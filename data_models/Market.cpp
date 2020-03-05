@@ -3,19 +3,36 @@
 //
 
 #include "Market.h"
+#include "Event.h"
+#include "Race.h"
 
 #include <utility>
 
 namespace Data {
 
     Market::Market(std::string id, std::string exchange_id, std::string market_start_time,
-                   std::string market_type, int number_of_winners, std::string name) :
+                   std::string market_type, int number_of_winners, std::string name, Event* event) :
             DataObject(std::move(id)),
+            m_parentEvent(event),
             m_exchangeId(std::move(exchange_id)),
             m_startTime(std::move(market_start_time)),
             m_numberOfWinners(number_of_winners),
             m_name(std::move(name)),
-            m_marketType(std::move(market_type)) {
+            m_marketType(std::move(market_type))
+    {
+    }
+
+    Market::Market(std::string id, std::string exchange_id, std::string market_start_time,
+                   std::string market_type, int number_of_winners, std::string name, Race* race) :
+            DataObject(std::move(id)),
+            m_parentRace(race),
+            m_exchangeId(std::move(exchange_id)),
+            m_startTime(std::move(market_start_time)),
+            m_numberOfWinners(number_of_winners),
+            m_name(std::move(name)),
+            m_marketType(std::move(market_type))
+    {
+
     }
 
     Json::Value Market::json() {
@@ -23,9 +40,19 @@ namespace Data {
         json["id"] = m_id;
         json["start_time"] = m_startTime;
         json["name"] = m_name;
-	json["type"] = m_marketType;
+    	json["type"] = m_marketType;
         json["exchange_id"] = m_exchangeId;
         json["number_of_winners"] = m_numberOfWinners;
+
+        if (m_parentEvent != nullptr) {
+            json["event_id"] = m_parentEvent->id();
+            json["event_name"] = m_parentEvent->get_name();
+        }
+        if (m_parentRace != nullptr) {
+            json["race_id"] = m_parentRace->id();
+            json["race_name"] = m_parentRace->get_name();
+        }
+
         if (m_persistenceEnabled.has_value())
             json["persistence_enabled"] = m_persistenceEnabled.value();
         if (m_bspMarket.has_value())
@@ -301,6 +328,20 @@ namespace Data {
         return m_status;
     }
 
+    void Market::parentRace(Race *race) {
+        if ((m_parentRace != nullptr) && (*race != *m_parentRace))
+        {
+            std::cout << "Parent race for market " << id() << " changed from " << m_parentRace->id() << " to " << race->id() << std::endl;
+        }
+        m_parentRace = race;
+    }
 
+    void Market::parentEvent(Event *event) {
+        if ((m_parentEvent != nullptr) && (*event != *m_parentEvent))
+        {
+            std::cout << "Parent event for market " << id() << " changed from " << m_parentEvent->id() << " to " << event->id() << std::endl;
+        }
+        m_parentEvent = event;
+    }
 
 }

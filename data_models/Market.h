@@ -13,12 +13,19 @@
 #include "Filter.h"
 #include "MarketRunner.h"
 #include "Runner.h"
+#include "Event.h"
+#include "Race.h"
 
 namespace Data {
 
     class MarketRunner;
+    class Event;
+    class Race;
 
     class Market : public DataObject {
+
+        Event* m_parentEvent;
+        Race* m_parentRace;
 
         //                                                                   MarketBook      MarketCatalogue
         std::string m_exchangeId;                                      //
@@ -64,11 +71,16 @@ namespace Data {
 
     public:
         Market(std::string id, std::string exchange_id, std::string market_start_time,
-               std::string market_type, int number_of_winners, std::string name);
+               std::string market_type, int number_of_winners, std::string name, Race* race);
+        Market(std::string id, std::string exchange_id, std::string market_start_time,
+               std::string market_type, int number_of_winners, std::string name, Event* event);
 
         Market() = delete;
 
         void addMarketRunner(MarketRunner *marketRunner);
+
+        void parentRace(Race* race);
+        void parentEvent(Event* event);
 
         Json::Value json() override;
         void exchangeId(std::string &s);

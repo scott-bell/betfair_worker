@@ -30,6 +30,7 @@ namespace Data {
 
     void Race::addChild(Market *item) {
         m_children_market.push_back(item);
+        item->parentRace(this);
     }
 
     const std::string &Race::get_name() const {

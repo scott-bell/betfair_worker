@@ -20,9 +20,7 @@ namespace Data {
 
     public:
         DataObject() = delete;
-
         virtual Json::Value json() = 0;
-
         [[nodiscard]] const std::string &id() const;
     };
 }

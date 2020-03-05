@@ -20,6 +20,8 @@ API::ReplaceExecutionReport APIClient::replaceOrders(const std::string& marketId
     HttpsClient client(url, true);
     API::ReplaceExecutionReport result{};
 
+    std::cout << "replaceOrders" << std::endl;
+
     Json::Value json;
     json["id"] = 1;
     json["jsonrpc"] = "2.0";
@@ -49,7 +51,8 @@ API::ReplaceExecutionReport APIClient::replaceOrders(const std::string& marketId
     Json::StyledWriter styledWriter;
     std::stringstream ss;
     ss << styledWriter.write(json);
-    std::cout << ss.str();
+    if (verbose)
+        std::cout << ss.str();
 
     client.request(
             "POST",
@@ -83,6 +86,7 @@ API::UpdateExecutionReport APIClient::updateOrders(std::string marketId, std::fo
     json["id"] = 1;
     json["jsonrpc"] = "2.0";
     json["method"] = "SportsAPING/v1.0/updateOrders";
+    std::cout << "updateOrders" << std::endl;
 
     Json::Value jsonParams;
 
@@ -102,7 +106,8 @@ API::UpdateExecutionReport APIClient::updateOrders(std::string marketId, std::fo
     Json::StyledWriter styledWriter;
     std::stringstream ss;
     ss << styledWriter.write(json);
-    std::cout << ss.str();
+    if (verbose)
+        std::cout << ss.str();
 
     client.request(
             "POST",
@@ -136,6 +141,8 @@ API::CancelExecutionReport APIClient::cancelOrders(std::optional<std::string> ma
     json["jsonrpc"] = "2.0";
     json["method"] = "SportsAPING/v1.0/cancelOrders";
 
+    std::cout << "cancelOrders" << std::endl;
+
     Json::Value jsonParams;
 
     if (marketId.has_value())
@@ -156,7 +163,8 @@ API::CancelExecutionReport APIClient::cancelOrders(std::optional<std::string> ma
     Json::StyledWriter styledWriter;
     std::stringstream ss;
     ss << styledWriter.write(json);
-    std::cout << ss.str();
+    if (verbose)
+        std::cout << ss.str();
 
     client.request(
             "POST",
@@ -193,6 +201,9 @@ APIClient::listClearedOrders(const std::string& betStatus, std::optional<std::se
 {
     HttpsClient client(url, true);
     API::ClearedOrderSummaryReport result;
+
+    std::cout << "listClearedOrders" << std::endl;
+
 
     Json::Value json;
     json["id"] = 1;
@@ -263,7 +274,8 @@ APIClient::listClearedOrders(const std::string& betStatus, std::optional<std::se
     Json::StyledWriter styledWriter;
     std::stringstream ss;
     ss << styledWriter.write(json);
-    std::cout << ss.str();
+    if (verbose)
+        std::cout << ss.str();
 
     client.request(
             "POST",
@@ -298,6 +310,8 @@ API::CurrentOrderSummaryReport APIClient::listCurrentOrders(std::optional<std::s
                                                             std::optional<int> fromRecord, std::optional<int> recordCount) {
     HttpsClient client(url, true);
     API::CurrentOrderSummaryReport result;
+
+    std::cout << "listCurrentOrders" << std::endl;
 
     Json::Value json;
     json["id"] = 1;
@@ -356,7 +370,8 @@ API::CurrentOrderSummaryReport APIClient::listCurrentOrders(std::optional<std::s
     Json::StyledWriter styledWriter;
     std::stringstream ss;
     ss << styledWriter.write(json);
-    std::cout << ss.str();
+    if (verbose)
+        std::cout << ss.str();
 
     client.request(
             "POST",
@@ -391,6 +406,8 @@ std::forward_list<API::MarketBook> APIClient::listMarketBook(const std::forward_
 {
     HttpsClient client(url, true);
     std::forward_list<API::MarketBook> items;
+
+    std::cout << "listMarketBook" << std::endl;
 
     Json::Value json;
     json["id"] = 1;
@@ -443,7 +460,8 @@ std::forward_list<API::MarketBook> APIClient::listMarketBook(const std::forward_
     Json::StyledWriter styledWriter;
     std::stringstream ss;
     ss << styledWriter.write(json);
-    std::cout << ss.str() << std::endl;
+    if (verbose)
+        std::cout << ss.str() << std::endl;
 
     client.request(
             "POST",
@@ -481,14 +499,14 @@ API::PlaceExecutionReport APIClient::placeOrders(const std::string& marketId, co
     HttpsClient client(url, true);
     API::PlaceExecutionReport result;
 
+    std::cout << "placeOrders" << std::endl;
+
     Json::Value json;
     json["id"] = 1;
     json["jsonrpc"] = "2.0";
     json["method"] = "SportsAPING/v1.0/placeOrders";
 
     Json::Value jsonParams;
-
-
 
     jsonParams["marketId"]=marketId;
     if (customerRef.has_value())
@@ -514,7 +532,8 @@ API::PlaceExecutionReport APIClient::placeOrders(const std::string& marketId, co
     Json::StyledWriter styledWriter;
     std::stringstream ss;
     ss << styledWriter.write(json);
-    std::cout << ss.str();
+    if (verbose)
+        std::cout << ss.str();
 
     client.request(
             "POST",
@@ -576,7 +595,8 @@ std::forward_list<API::MarketCatalogue> APIClient::listMarketCatalogue(const API
     Json::StyledWriter styledWriter;
     std::stringstream ss;
     ss << styledWriter.write(json);
-    std::cout << ss.str();
+    if (verbose)
+        std::cout << ss.str();
 
     client.request(
             "POST",

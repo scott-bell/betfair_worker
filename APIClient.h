@@ -27,7 +27,7 @@
 
 class APIClient {
     using HttpsClient = SimpleWeb::Client<SimpleWeb::HTTPS>;
-
+    bool verbose = false;
     std::string url;
     SimpleWeb::CaseInsensitiveMultimap header;
 public:
