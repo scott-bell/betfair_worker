@@ -19,7 +19,7 @@ namespace Data {
             json["last_price_traded"] = m_lastPriceTraded.value();
         if (m_totalMatched.has_value())
             json["total_matched"] = m_totalMatched.value();
-        Json::Value backPrices;
+        Json::Value backPrices = Json::arrayValue;
         for (auto i : m_backPrices) {
             Json::Value pz;
             pz["price"] = std::get<0>(i);
@@ -27,7 +27,7 @@ namespace Data {
             backPrices.append(pz);
         }
         json["availability"]["back"] = backPrices;
-        Json::Value layPrices;
+        Json::Value layPrices = Json::arrayValue;
         for (auto i : m_layPrices) {
             Json::Value pz;
             pz["price"] = std::get<0>(i);
@@ -35,7 +35,7 @@ namespace Data {
             layPrices.append(pz);
         }
         json["availability"]["lay"] = layPrices;
-        Json::Value tradedPrices;
+        Json::Value tradedPrices = Json::arrayValue;
         for (auto i : m_tradedPrices) {
             Json::Value pz;
             pz["price"] = std::get<0>(i);

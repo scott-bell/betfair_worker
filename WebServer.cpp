@@ -52,7 +52,7 @@ void WebServer::addResource(HttpServer& server, const std::string& path, C& cont
         {
             Json::Value root;
             root["success"] = true;
-            Json::Value nested;
+            Json::Value nested = Json::arrayValue;
             int totalCount = 0;
             unsigned int maxResults = 100;
             F filter;

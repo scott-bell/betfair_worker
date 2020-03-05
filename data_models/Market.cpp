@@ -109,7 +109,7 @@ namespace Data {
             json["runners_voidable"] = m_runnersVoidable.value();
         if (m_version.has_value())
             json["version"] = std::to_string(m_version.value());
-        Json::Value runners;
+        Json::Value runners = Json::arrayValue;
         for (auto& a : m_marketRunners) {
             runners.append(a->json());
         }
