@@ -6,7 +6,7 @@
 
 
 namespace Data {
-    Json::Value MarketRunner::json() {
+    Json::Value MarketRunner::json() const {
         Json::Value json;
         json["id"] = m_id;
         json["runner_id"] = m_runner.id();
@@ -72,11 +72,9 @@ namespace Data {
     void MarketRunner::totalMatched(double d) {
         m_totalMatched = d;
     }
-
     void MarketRunner::removalDate(const std::string &date) {
         m_removalDate = date;
     }
-
     void MarketRunner::backPrices(std::vector<std::tuple<double, double>>& prices) {
         m_backPrices = prices;
     }

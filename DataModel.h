@@ -6,6 +6,7 @@
 #define SXCLIENT_DATAMODEL_H
 
 #include <unordered_map>
+#include <algorithm>
 
 template <typename T>
 class DataModel {
@@ -15,6 +16,7 @@ public:
     T* getById(const std::string& id);
     int nodeCount();
     const std::unordered_map<std::string,T>& items();
+    std::vector<T*> toVector();
 
     explicit DataModel(int size);
 };
@@ -48,5 +50,22 @@ template<typename T>
 const std::unordered_map<std::string, T>& DataModel<T>::items() {
     return m_items;
 }
+
+template<typename T>
+std::vector<T*> DataModel<T>::toVector() {
+    std::vector<T*> itemsCopy;
+    for (auto& item: m_items) {
+        T* ug = (&item.second);
+        itemsCopy.push_back(ug);
+    }
+    std::sort(itemsCopy.begin(), itemsCopy.end(),
+            [](const T* a, const T* b) -> bool
+            {
+                return a->id() > b->id();
+            }
+    );
+    return itemsCopy;
+}
+
 
 #endif //SXCLIENT_DATAMODEL_H

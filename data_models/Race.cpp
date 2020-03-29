@@ -16,7 +16,7 @@ namespace Data {
 
     }
 
-    Json::Value Race::json() {
+    Json::Value Race::json() const {
         Json::Value json;
         json["id"] = m_id;
         json["name"] = m_name;

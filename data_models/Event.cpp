@@ -47,7 +47,7 @@ namespace Data {
         return m_country_code;
     }
 
-    Json::Value Event::json() {
+    Json::Value Event::json() const {
         Json::Value json;
         json["id"] = m_id;
         json["name"] = m_name;

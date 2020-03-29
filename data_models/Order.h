@@ -34,7 +34,7 @@ namespace Data {
         std::optional<std::string> m_customerOrderRef;
         std::optional<std::string> m_customerStrategyRef;
     public:
-        Json::Value json();
+        Json::Value json() const;
 
         Order(std::string id, Market *market, Runner *runner, double handicap, double price,
               double size, double bspLiability, std::string side, std::string status,

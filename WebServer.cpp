@@ -4,11 +4,21 @@
 
 #include <jsoncpp/json/json.h>
 #include <data_models/MarketFilter.h>
+#include <data_models/Sorter.h>
 #include "WebServer.h"
 #include "Utility.h"
 
+
 template <typename T, typename C, typename F>
 void WebServer::addResource(HttpServer& server, const std::string& path, C& container) {
+
+    server.resource["^/" + path + "/([0-9.:]+)"]["OPTIONS"] = [&](std::shared_ptr<HttpServer::Response> response, const std::shared_ptr<HttpServer::Request>& /*request*/) {
+        *response   << "HTTP/1.1 200 OK\r\n"
+                    << "Access-Control-Allow-Origin: *\r\n"
+                    << "Access-Control-Allow-Methods:: GET\r\n"
+                    << "\r\n";
+    };
+
     server.resource["^/" + path + "/([0-9.:]+)"]["GET"] = [&](std::shared_ptr<HttpServer::Response> response, std::shared_ptr<HttpServer::Request> request) {
         std::string key = Utility::split(request->path,'/')[2];
         T* item = container.getById(key);
@@ -31,10 +41,22 @@ void WebServer::addResource(HttpServer& server, const std::string& path, C& cont
             Json::StyledWriter styledWriter;
             ss << styledWriter.write(root);
             *response   << "HTTP/1.1 200 OK\r\n"
+                        << "Access-Control-Allow-Origin: *\r\n"
                         << "Content-Length: " << ss.str().length() << "\r\n"
                         << "\r\n"
                         << ss.str();
         }
+    };
+
+    server.resource["^/" + path + "$"]["OPTIONS"] = [&](std::shared_ptr<HttpServer::Response> response, const std::shared_ptr<HttpServer::Request>& /*request*/) {
+        std::string str = "OK";
+        *response   << "HTTP/1.1 200 OK\r\n"
+                    << "Access-Control-Allow-Methods: GET POST OPTIONS\r\n"
+                    << "Access-Control-Allow-Headers: content-type, x-requested-with\r\n"
+                    << "Access-Control-Allow-Origin: *\r\n"
+                    << "Content-Length: " << str.length() << "\r\n"
+                    << "\r\n"
+                    << str;
     };
 
     server.resource["^/" + path + "$"]["GET"] = [&](std::shared_ptr<HttpServer::Response> response, std::shared_ptr<HttpServer::Request> request) {
@@ -53,30 +75,55 @@ void WebServer::addResource(HttpServer& server, const std::string& path, C& cont
             Json::Value root;
             root["success"] = true;
             Json::Value nested = Json::arrayValue;
-            int totalCount = 0;
+            unsigned int totalCount = 0;
             unsigned int maxResults = 100;
+            unsigned int start = 0;
             F filter;
 
-
-            if (req.isMember("filter")) {
-                filter = F(req["filter"]);
-            }
-            if (req.isMember("max_results")) {
-                maxResults = req["max_results"].asInt();
-            }
-
-            for (auto item: items) {
-                totalCount++;
-                if (nested.size() < maxResults) {
-                    if (filter.match(item.second))
-                        nested.append(item.second.json());
+            auto query_fields = request->parse_query_string();
+            {
+                auto umit = query_fields.find("limit");
+                if (umit != query_fields.end()) {
+                    maxResults = std::stoi(query_fields.find("limit")->second);
                 }
             }
+            {
+                auto umit = query_fields.find("start");
+                if (umit != query_fields.end()) {
+                    start = std::stoi(query_fields.find("start")->second);
+                }
+            }
+            // e.g. [{"property":"event_id","direction":"DESC"}]
+            Data::Sorter sorter;
+            {
+                auto umit = query_fields.find("sort");
+                if (umit != query_fields.end()) {
+                    std::string sort = query_fields.find("sort")->second;
+                    std::cout << sort << std::endl;
+
+                    Json::Value jsonSort;
+                    Json::Reader reader;
+                    if (reader.parse( sort, jsonSort )) {
+                        sorter = Data::Sorter(jsonSort);
+                    }
+                }
+            }
+
+            std::vector<T*> itemsCopy = container.toVector();
+
+            for (const T* item: itemsCopy) {
+                if ((totalCount >= start) && (totalCount <= start+maxResults) && (filter.match(*item))) {
+                    nested.append(item->json());
+                }
+                totalCount++;
+            }
+
             root["items"] = nested;
             root["total_count"] = totalCount;
             Json::StyledWriter styledWriter;
             ss << styledWriter.write(root);
             *response   << "HTTP/1.1 200 OK\r\n"
+                        << "Access-Control-Allow-Origin: *\r\n"
                         << "Content-Length: " << ss.str().length() << "\r\n"
                         << "\r\n"
                         << ss.str();

@@ -11,7 +11,7 @@
 
 namespace Data  {
     class MarketRunner : public DataObject {
-        Runner m_runner;
+        const Runner& m_runner;
         double m_handicap;
         int m_sortPriority;
         std::optional<std::string> m_status;
@@ -36,7 +36,7 @@ namespace Data  {
         void tradedPrices(std::vector<std::tuple<double,double>>& prices);
         const std::optional<std::string>& status();
         MarketRunner(std::string id, const Runner& runner, double handicap, int sortPriority);
-        Json::Value json();
+        Json::Value json() const;
     };
 }
 

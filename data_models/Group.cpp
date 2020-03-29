@@ -8,7 +8,7 @@ namespace Data {
 
     }
 
-    Json::Value Group::json() {
+    Json::Value Group::json() const {
         Json::Value json;
         json["id"] = m_id;
         json["name"] = m_name;

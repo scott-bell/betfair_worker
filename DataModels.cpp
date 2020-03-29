@@ -5,9 +5,6 @@
 #include "DataModels.h"
 #include <utility>
 
-
-
-
 DataModel<Data::Market>& DataModels::marketModel() {
     return m_marketModel;
 }

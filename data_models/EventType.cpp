@@ -10,7 +10,7 @@ namespace Data {
     EventType::EventType(std::string id, std::string name) : DataObject(id), m_name(std::move(name)) {
     }
 
-    Json::Value EventType::json() {
+    Json::Value EventType::json() const {
         Json::Value json;
         json["id"] = m_id;
         json["name"] = m_name;

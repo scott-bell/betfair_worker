@@ -24,7 +24,7 @@ namespace Data {
     public:
         const std::string &get_name() const;
 
-        Json::Value json();
+        Json::Value json() const;
 
         EventType(std::string id, std::string name);
 

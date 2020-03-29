@@ -82,7 +82,7 @@ namespace Data {
         void parentRace(Race* race);
         void parentEvent(Event* event);
 
-        Json::Value json() override;
+        Json::Value json() const;
         void exchangeId(std::string &s);
         void startTime(const std::string &_startTime);
         void numberOfWinners(int i);

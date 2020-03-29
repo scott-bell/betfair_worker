@@ -28,7 +28,7 @@ namespace Data {
 
         Race() = delete;
 
-        Json::Value json();
+        Json::Value json() const;
 
         void addChild(Market *item);
 

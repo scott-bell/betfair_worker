@@ -45,6 +45,10 @@ void TaskManager::init() {
             marketIdsLimited.clear();
         }
 
+        std::set<std::string> marketIdsExtra;
+        marketIdsExtra.insert("1.170095864");
+        getMarketBook(marketIdsExtra);
+
         getOrders();
 
         std::this_thread::sleep_for(std::chrono::milliseconds(5000));

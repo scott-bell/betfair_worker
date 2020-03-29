@@ -8,7 +8,7 @@
 
 namespace Data {
 
-    Json::Value Order::json() {
+    Json::Value Order::json() const {
         Json::Value json;
         json["id"] = m_id;
         json["market_id"] = m_market->id();

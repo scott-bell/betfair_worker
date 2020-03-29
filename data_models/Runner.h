@@ -13,9 +13,9 @@ namespace Data {
 class Runner  : public DataObject {
     std::string m_name;
 public:
-    Json::Value json();
+    Json::Value json() const;
     Runner(std::string id, std::string name);
-    const std::string& name();
+    const std::string& name() const;
     bool operator < (const Runner& rhs) const {
         return id() < rhs.id();
     }

@@ -35,7 +35,7 @@ namespace Data {
 
     }
 
-    Json::Value Market::json() {
+    Json::Value Market::json() const {
         Json::Value json;
         json["id"] = m_id;
         json["start_time"] = m_startTime;
@@ -70,7 +70,7 @@ namespace Data {
         if (m_regulator.has_value())
             json["regulator"] = m_regulator.value();
         if (m_marketBaseRate.has_value())
-            json["market_nase_rate"] = m_marketBaseRate.value();
+            json["market_base_rate"] = m_marketBaseRate.value();
         if (m_discountAllowed.has_value())
             json["discount_allowed"] = m_discountAllowed.value();
         if (m_wallet.has_value())

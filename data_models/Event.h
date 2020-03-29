@@ -27,7 +27,7 @@ namespace Data {
     public:
         Event(std::string id, std::string name, std::string country_code);
 
-        Json::Value json();
+        Json::Value json() const;
 
         Event() = delete;
 

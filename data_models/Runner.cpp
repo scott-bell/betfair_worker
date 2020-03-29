@@ -10,7 +10,7 @@ namespace Data {
 
     }
 
-    Json::Value Runner::json() {
+    Json::Value Runner::json() const {
         Json::Value json;
         json["id"] = m_id;
         json["name"] = m_name;
@@ -18,7 +18,7 @@ namespace Data {
         return json;
     }
 
-    const std::string &Runner::name() {
+    const std::string &Runner::name() const {
         return m_name;
     }
 

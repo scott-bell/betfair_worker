@@ -23,7 +23,7 @@ namespace Data {
 
         Group() = delete;
 
-        Json::Value json();
+        Json::Value json() const;
         void addChild(Event *item);
         void addChild(Group *item);
         const std::string &get_name() const;
