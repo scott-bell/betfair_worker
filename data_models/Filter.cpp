@@ -8,6 +8,6 @@ bool Filter::match(const Data::DataObject &item) {
     return true;
 }
 
-Filter::Filter(Json::Value json) {
+Filter::Filter(Json::Value) {
 
 }

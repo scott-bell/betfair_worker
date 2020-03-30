@@ -60,8 +60,6 @@ void WebServer::addResource(HttpServer& server, const std::string& path, C& cont
     };
 
     server.resource["^/" + path + "$"]["GET"] = [&](std::shared_ptr<HttpServer::Response> response, std::shared_ptr<HttpServer::Request> request) {
-        const auto& items = container.items();
-
         Json::Value req;
         std::stringstream in;
         std::string body = request->content.string();
@@ -109,7 +107,7 @@ void WebServer::addResource(HttpServer& server, const std::string& path, C& cont
                 }
             }
 
-            std::vector<T*> itemsCopy = container.toVector();
+            std::vector<T*> itemsCopy = container.toVector(sorter);
 
             for (const T* item: itemsCopy) {
                 if ((totalCount >= start) && (totalCount <= start+maxResults) && (filter.match(*item))) {

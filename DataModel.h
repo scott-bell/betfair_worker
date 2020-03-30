@@ -7,6 +7,7 @@
 
 #include <unordered_map>
 #include <algorithm>
+#include <data_models/Sorter.h>
 
 template <typename T>
 class DataModel {
@@ -16,7 +17,7 @@ public:
     T* getById(const std::string& id);
     int nodeCount();
     const std::unordered_map<std::string,T>& items();
-    std::vector<T*> toVector();
+    std::vector<T*> toVector(const Data::Sorter& sorter);
 
     explicit DataModel(int size);
 };
@@ -52,16 +53,16 @@ const std::unordered_map<std::string, T>& DataModel<T>::items() {
 }
 
 template<typename T>
-std::vector<T*> DataModel<T>::toVector() {
+std::vector<T*> DataModel<T>::toVector(const Data::Sorter& sorter) {
     std::vector<T*> itemsCopy;
     for (auto& item: m_items) {
         T* ug = (&item.second);
         itemsCopy.push_back(ug);
     }
     std::sort(itemsCopy.begin(), itemsCopy.end(),
-            [](const T* a, const T* b) -> bool
+            [&](const T* a, const T* b) -> bool
             {
-                return a->id() > b->id();
+                return sorter.compare(*a,*b);
             }
     );
     return itemsCopy;

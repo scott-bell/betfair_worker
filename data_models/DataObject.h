@@ -8,8 +8,10 @@
 
 #include <string>
 #include <jsoncpp/json/json.h>
+#include "Sorter.h"
 
 namespace Data {
+    class Sorter;
     class DataObject {
     protected:
         friend class DataModels;
@@ -20,6 +22,7 @@ namespace Data {
 
     public:
         DataObject() = delete;
+        bool compare(const DataObject& rhs, const Data::Sorter& sorter) const;
         [[nodiscard]] virtual Json::Value json() const = 0;
         [[nodiscard]] const std::string &id() const;
     };

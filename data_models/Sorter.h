@@ -11,12 +11,14 @@
 
 namespace Data {
 
-
+    class DataObject;
     class Sorter {
+    private:
+        int id;
     public:
         explicit Sorter(Json::Value json);
-        Sorter();
-        bool compare(DataObject &lhs, DataObject &rhs);
+        Sorter() = default;
+        bool compare(const Data::DataObject &lhs, const Data::DataObject &rhs) const;
     };
 
 }
