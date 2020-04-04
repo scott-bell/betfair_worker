@@ -16,7 +16,7 @@ class WebServer {
 public:
     explicit WebServer(DataModels& bd);
     void init();
-    template <typename T, typename C, typename F>
+    template <typename T, typename C, typename F, typename S>
     void addResource(HttpServer& server, const std::string &path, C& container);
 };
 

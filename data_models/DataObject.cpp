@@ -15,8 +15,4 @@ namespace Data {
         return m_id;
     }
 
-    bool DataObject::compare(const DataObject &rhs, const Data::Sorter &sorter) const {
-        return sorter.compare(*this, rhs);
-    }
-
 }

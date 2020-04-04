@@ -344,4 +344,73 @@ namespace Data {
         m_parentEvent = event;
     }
 
+    Event *Market::parentEvent() const {
+        return m_parentEvent;
+    }
+    Race *Market::parentRace() const {
+        return m_parentRace;
+    }
+    std::optional<long> Market::version() const {
+        return m_version;
+    }
+
+    std::optional<bool> Market::runnersVoidable() const {
+        return m_runnersVoidable;
+    }
+
+    std::optional<double> Market::totalAvailable() const {
+        return m_totalAvailable;
+    }
+
+    std::optional<double> Market::totalMatched() const {
+        return m_totalMatched;
+    }
+
+    const std::optional<std::string> &Market::lastMatchTime() const {
+        return m_lastMatchTime;
+    }
+
+    std::optional<int> Market::numberOfActiveRunners() const {
+        return m_numberOfActiveRunners;
+    }
+
+    std::optional<int> Market::numberOfRunners() const {
+        return m_numberOfRunners;
+    }
+
+    std::optional<bool> Market::inplay() const {
+        return m_inplay;
+    }
+
+    std::optional<bool> Market::complete() const {
+        return m_complete;
+    }
+
+    std::optional<bool> Market::bspReconciled() const {
+        return m_bspReconciled;
+    }
+
+    std::optional<int> Market::betDelay() const {
+        return m_betDelay;
+    }
+
+    std::optional<bool> Market::isMarketDataDelayed() const {
+        return m_isMarketDataDelayed;
+    }
+
+    const std::optional<std::string> &Market::raceType() const {
+        return m_raceType;
+    }
+
+    const std::optional<std::string> &Market::clarifications() const {
+        return m_clarifications;
+    }
+
+    std::optional<double> Market::eachWayDivisor() const {
+        return m_eachWayDivisor;
+    }
+
+    std::optional<bool> Market::rulesHasDate() const {
+        return m_rulesHasDate;
+    }
 }

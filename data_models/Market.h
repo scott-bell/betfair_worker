@@ -117,6 +117,8 @@ namespace Data {
         void crossMatching(bool b);
         void runnersVoidable(bool b);
         void version(long l);
+        Event* parentEvent() const;
+        Race* parentRace() const;
         [[nodiscard]] const std::string &exchangeId() const;
         [[nodiscard]] const std::string &startTime() const;
         [[nodiscard]] int numberOfWinners() const;
@@ -137,7 +139,7 @@ namespace Data {
         [[nodiscard]] std::optional<double> eachWayDivisor() const;
         [[nodiscard]] const std::optional<std::string> &clarifications() const;
         [[nodiscard]] const std::optional<std::string> &raceType() const;
-        [[nodiscard]] std::optional<bool> isMarketDateDelayed() const;
+        [[nodiscard]] std::optional<bool> isMarketDataDelayed() const;
         [[nodiscard]] const std::optional<std::string> &status() const;
         [[nodiscard]] std::optional<int> betDelay() const;
         [[nodiscard]] std::optional<bool> bspReconciled() const;

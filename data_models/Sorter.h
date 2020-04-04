@@ -14,11 +14,11 @@ namespace Data {
     class DataObject;
     class Sorter {
     private:
-        int id;
+        Json::Value json;
     public:
         explicit Sorter(Json::Value json);
         Sorter() = default;
-        bool compare(const Data::DataObject &lhs, const Data::DataObject &rhs) const;
+        virtual bool compare(const Data::DataObject &lhs, const Data::DataObject &rhs) const;
     };
 
 }

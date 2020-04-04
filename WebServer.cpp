@@ -5,11 +5,12 @@
 #include <jsoncpp/json/json.h>
 #include <data_models/MarketFilter.h>
 #include <data_models/Sorter.h>
+#include <data_models/MarketSorter.h>
 #include "WebServer.h"
 #include "Utility.h"
 
 
-template <typename T, typename C, typename F>
+template <typename T, typename C, typename F, typename S>
 void WebServer::addResource(HttpServer& server, const std::string& path, C& container) {
 
     server.resource["^/" + path + "/([0-9.:]+)"]["OPTIONS"] = [&](std::shared_ptr<HttpServer::Response> response, const std::shared_ptr<HttpServer::Request>& /*request*/) {
@@ -92,7 +93,7 @@ void WebServer::addResource(HttpServer& server, const std::string& path, C& cont
                 }
             }
             // e.g. [{"property":"event_id","direction":"DESC"}]
-            Data::Sorter sorter;
+            S sorter;
             {
                 auto umit = query_fields.find("sort");
                 if (umit != query_fields.end()) {
@@ -102,7 +103,7 @@ void WebServer::addResource(HttpServer& server, const std::string& path, C& cont
                     Json::Value jsonSort;
                     Json::Reader reader;
                     if (reader.parse( sort, jsonSort )) {
-                        sorter = Data::Sorter(jsonSort);
+                        sorter = S(jsonSort);
                     }
                 }
             }
@@ -134,14 +135,14 @@ void WebServer::init() {
 
     HttpServer server;
     server.config.port = 8080;
-    addResource<Data::Market,DataModel<Data::Market>,MarketFilter> (server, "market", bd.marketModel());
-    addResource<Data::Runner,DataModel<Data::Runner>,Filter> (server, "runner", bd.runnerModel());
-    addResource<Data::Event,DataModel<Data::Event>,Filter> (server, "event", bd.eventModel());
-    addResource<Data::Race,DataModel<Data::Race>,Filter> (server, "race", bd.raceModel());
-    addResource<Data::Group,DataModel<Data::Group>,Filter> (server, "group", bd.groupModel());
-    addResource<Data::EventType,DataModel<Data::EventType>,Filter> (server, "eventtype", bd.eventTypeModel());
-    addResource<Data::Order,DataModel<Data::Order>,Filter> (server, "order", bd.orderModel());
-    addResource<Data::MarketRunner,DataModel<Data::MarketRunner>,Filter> (server, "marketrunner", bd.marketRunnerModel());
+    addResource<Data::Market,DataModel<Data::Market>,MarketFilter, Data::MarketSorter> (server, "market", bd.marketModel());
+    addResource<Data::Runner,DataModel<Data::Runner>,Filter, Data::Sorter> (server, "runner", bd.runnerModel());
+    addResource<Data::Event,DataModel<Data::Event>,Filter, Data::Sorter> (server, "event", bd.eventModel());
+    addResource<Data::Race,DataModel<Data::Race>,Filter, Data::Sorter> (server, "race", bd.raceModel());
+    addResource<Data::Group,DataModel<Data::Group>,Filter, Data::Sorter> (server, "group", bd.groupModel());
+    addResource<Data::EventType,DataModel<Data::EventType>,Filter, Data::Sorter> (server, "eventtype", bd.eventTypeModel());
+    addResource<Data::Order,DataModel<Data::Order>,Filter, Data::Sorter> (server, "order", bd.orderModel());
+    addResource<Data::MarketRunner,DataModel<Data::MarketRunner>,Filter, Data::Sorter> (server, "marketrunner", bd.marketRunnerModel());
 
     std::thread server_thread([&server]() {
         // Start server

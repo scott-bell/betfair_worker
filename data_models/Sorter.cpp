@@ -3,26 +3,24 @@
 //
 
 #include "Sorter.h"
+#include <iostream>
 
 namespace Data {
 
-    Sorter::Sorter(Json::Value json) {
-        id = 0;
-        for (const Json::Value &index : json) {
-            if (index["property"] == "id") {
-                if (index["direction"] == "DESC")
-                    id = -1;
-                else
-                    id = 1;
-            }
-        }
-     }
+    Sorter::Sorter(Json::Value json) : json(std::move(json)){
+
+    }
 
     bool Sorter::compare(const DataObject &lhs, const DataObject &rhs) const {
-        if (id > 0)
-            return lhs.id() > rhs.id();
-        else if (id < 0)
-            return lhs.id() < rhs.id();
+        for (const Json::Value &index : json) {
+            bool desc = index["direction"] == "DESC";
+            if (index["property"] == "idd") {
+                if (desc)
+                    return lhs.id() > rhs.id();
+                else
+                    return lhs.id() < rhs.id();
+            }
+        }
         return lhs.id() < rhs.id();
     }
 

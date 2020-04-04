@@ -22,7 +22,6 @@ namespace Data {
 
     public:
         DataObject() = delete;
-        bool compare(const DataObject& rhs, const Data::Sorter& sorter) const;
         [[nodiscard]] virtual Json::Value json() const = 0;
         [[nodiscard]] const std::string &id() const;
     };
