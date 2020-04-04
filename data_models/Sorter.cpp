@@ -3,7 +3,6 @@
 //
 
 #include "Sorter.h"
-#include <iostream>
 
 namespace Data {
 
@@ -14,7 +13,7 @@ namespace Data {
     bool Sorter::compare(const DataObject &lhs, const DataObject &rhs) const {
         for (const Json::Value &index : json) {
             bool desc = index["direction"] == "DESC";
-            if (index["property"] == "idd") {
+            if (index["property"] == "id") {
                 if (desc)
                     return lhs.id() > rhs.id();
                 else
