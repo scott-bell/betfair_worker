@@ -56,7 +56,7 @@ template<typename T>
 std::vector<T*> DataModel<T>::toVector(const Data::Sorter& sorter) {
     std::vector<T*> itemsCopy;
     for (auto& item: m_items) {
-        T* ug = (&item.second);
+        T *ug = (&item.second);
         itemsCopy.push_back(ug);
     }
     std::sort(itemsCopy.begin(), itemsCopy.end(),
@@ -67,6 +67,5 @@ std::vector<T*> DataModel<T>::toVector(const Data::Sorter& sorter) {
     );
     return itemsCopy;
 }
-
 
 #endif //SXCLIENT_DATAMODEL_H

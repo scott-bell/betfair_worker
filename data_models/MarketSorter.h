@@ -16,6 +16,7 @@ namespace Data {
         explicit MarketSorter(Json::Value json);
         MarketSorter() = default;
         [[nodiscard]] bool compare(const Data::DataObject &lhs, const Data::DataObject &rhs) const override;
+        [[nodiscard]] bool compareProperties(const Data::Market* l, const Data::Market* r, bool& success, std::string& prop, bool desc) const;
     };
 
 
