@@ -11,7 +11,6 @@
 namespace Data {
 
     class MarketSorter : public Sorter {
-        Json::Value json;
     public:
         explicit MarketSorter(Json::Value json);
         MarketSorter() = default;

@@ -8,12 +8,19 @@
 
 #include "DataObject.h"
 
-class Filter {
-public:
-    bool match(const Data::DataObject& item);
-    Filter() = default;
-    explicit Filter(Json::Value json);
-};
+namespace Data {
+    class Filter {
+    private:
+        Json::Value _json;
+    public:
+        explicit Filter(Json::Value json);
+        Filter() = default;
+        [[nodiscard]] virtual bool matches(const Data::DataObject &item) const;
+    protected:
+        const Json::Value& json() const;
+
+    };
+}
 
 
 #endif //SX_CLIENT_FILTER_H

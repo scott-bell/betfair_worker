@@ -14,14 +14,14 @@ namespace Data {
     class DataObject;
     class Sorter {
     private:
-        Json::Value json;
+        Json::Value _json;
     public:
         explicit Sorter(Json::Value json);
         Sorter() = default;
         virtual bool compare(const Data::DataObject &lhs, const Data::DataObject &rhs) const;
-        template <typename T>
-        bool compareProperty(const T &lhs, const T &rhs, bool desc) const;
         [[nodiscard]] bool compareProperties(const Data::DataObject* l, const Data::DataObject* r, bool& success, std::string& prop, bool desc) const;
+    protected:
+        const Json::Value& json() const;
     };
 
 }

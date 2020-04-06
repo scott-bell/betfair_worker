@@ -17,7 +17,7 @@ public:
     T* getById(const std::string& id);
     int nodeCount();
     const std::unordered_map<std::string,T>& items();
-    std::vector<T*> toVector(const Data::Sorter& sorter);
+    std::vector<T*> toVector(const Data::Sorter& sorter, const Data::Filter& filter);
 
     explicit DataModel(int size);
 };
@@ -53,11 +53,13 @@ const std::unordered_map<std::string, T>& DataModel<T>::items() {
 }
 
 template<typename T>
-std::vector<T*> DataModel<T>::toVector(const Data::Sorter& sorter) {
+std::vector<T*> DataModel<T>::toVector(const Data::Sorter& sorter, const Data::Filter& filter) {
     std::vector<T*> itemsCopy;
     for (auto& item: m_items) {
         T *ug = (&item.second);
-        itemsCopy.push_back(ug);
+        if (filter.matches(*ug)) {
+            itemsCopy.push_back(ug);
+        }
     }
     std::sort(itemsCopy.begin(), itemsCopy.end(),
             [&](const T* a, const T* b) -> bool

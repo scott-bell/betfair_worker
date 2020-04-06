@@ -6,12 +6,12 @@
 
 namespace Data {
 
-    Sorter::Sorter(Json::Value json) : json(std::move(json)){
+    Sorter::Sorter(Json::Value json) : _json(std::move(json)){
 
     }
 
     bool Sorter::compare(const DataObject &lhs, const DataObject &rhs) const {
-        for (const Json::Value &index : json) {
+        for (const Json::Value &index : json()) {
             bool success = true;
             std::string property = index["property"].asString();
             bool desc = index["direction"].asString() == "DESC";
@@ -34,6 +34,10 @@ namespace Data {
         }
         success = false;
         return false;
+    }
+
+    const Json::Value &Sorter::json() const {
+        return _json;
     }
 
 }

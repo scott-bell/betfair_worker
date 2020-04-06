@@ -10,15 +10,16 @@
 #include "Filter.h"
 #include "Market.h"
 
+namespace Data {
 
+    class MarketFilter : public Filter {
+        std::optional<std::string> m_marketType;
+    public:
+        MarketFilter() = default;
+        explicit MarketFilter(Json::Value json);
+        [[nodiscard]] bool matches(const Data::DataObject &item) const override;
+    };
 
-class MarketFilter : public Filter {
-    std::optional<std::string> m_marketType;
-public:
-    MarketFilter() = default;
-    explicit MarketFilter(Json::Value json);
-    bool match(const Data::Market& item);
-};
-
+}
 
 #endif //SX_CLIENT_MARKETFILTER_H

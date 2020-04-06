@@ -77,7 +77,6 @@ void WebServer::addResource(HttpServer& server, const std::string& path, C& cont
             unsigned int totalCount = 0;
             unsigned int maxResults = 100;
             unsigned int start = 0;
-            F filter;
 
             auto query_fields = request->parse_query_string();
             {
@@ -108,10 +107,25 @@ void WebServer::addResource(HttpServer& server, const std::string& path, C& cont
                 }
             }
 
-            std::vector<T*> itemsCopy = container.toVector(sorter);
+            F filter;
+            {
+                auto umit = query_fields.find("filter");
+                if (umit != query_fields.end()) {
+                    std::string filterString = query_fields.find("filter")->second;
+                    std::cout << filterString << std::endl;
+
+                    Json::Value jsonFilter;
+                    Json::Reader reader;
+                    if (reader.parse( filterString, jsonFilter )) {
+                        filter = F(jsonFilter);
+                    }
+                }
+            }
+
+            std::vector<T*> itemsCopy = container.toVector(sorter, filter);
 
             for (const T* item: itemsCopy) {
-                if ((totalCount >= start) && (totalCount <= start+maxResults) && (filter.match(*item))) {
+                if ((totalCount >= start) && (totalCount <= start+maxResults) && (filter.matches(*item))) {
                     nested.append(item->json());
                 }
                 totalCount++;
@@ -135,14 +149,14 @@ void WebServer::init() {
 
     HttpServer server;
     server.config.port = 8080;
-    addResource<Data::Market,DataModel<Data::Market>,MarketFilter, Data::MarketSorter> (server, "market", bd.marketModel());
-    addResource<Data::Runner,DataModel<Data::Runner>,Filter, Data::Sorter> (server, "runner", bd.runnerModel());
-    addResource<Data::Event,DataModel<Data::Event>,Filter, Data::Sorter> (server, "event", bd.eventModel());
-    addResource<Data::Race,DataModel<Data::Race>,Filter, Data::Sorter> (server, "race", bd.raceModel());
-    addResource<Data::Group,DataModel<Data::Group>,Filter, Data::Sorter> (server, "group", bd.groupModel());
-    addResource<Data::EventType,DataModel<Data::EventType>,Filter, Data::Sorter> (server, "eventtype", bd.eventTypeModel());
-    addResource<Data::Order,DataModel<Data::Order>,Filter, Data::Sorter> (server, "order", bd.orderModel());
-    addResource<Data::MarketRunner,DataModel<Data::MarketRunner>,Filter, Data::Sorter> (server, "marketrunner", bd.marketRunnerModel());
+    addResource<Data::Market,DataModel<Data::Market>,Data::MarketFilter, Data::MarketSorter> (server, "market", bd.marketModel());
+    addResource<Data::Runner,DataModel<Data::Runner>,Data::Filter, Data::Sorter> (server, "runner", bd.runnerModel());
+    addResource<Data::Event,DataModel<Data::Event>,Data::Filter, Data::Sorter> (server, "event", bd.eventModel());
+    addResource<Data::Race,DataModel<Data::Race>,Data::Filter, Data::Sorter> (server, "race", bd.raceModel());
+    addResource<Data::Group,DataModel<Data::Group>,Data::Filter, Data::Sorter> (server, "group", bd.groupModel());
+    addResource<Data::EventType,DataModel<Data::EventType>,Data::Filter, Data::Sorter> (server, "eventtype", bd.eventTypeModel());
+    addResource<Data::Order,DataModel<Data::Order>,Data::Filter, Data::Sorter> (server, "order", bd.orderModel());
+    addResource<Data::MarketRunner,DataModel<Data::MarketRunner>,Data::Filter, Data::Sorter> (server, "marketrunner", bd.marketRunnerModel());
 
     std::thread server_thread([&server]() {
         // Start server

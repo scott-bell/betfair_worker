@@ -3,11 +3,13 @@
 //
 
 #include "MarketSorter.h"
+
+#include <utility>
 #include "Market.h"
 
 namespace Data {
 
-    MarketSorter::MarketSorter(Json::Value json) : Sorter(json), json(json) {
+    MarketSorter::MarketSorter(Json::Value json) : Sorter(std::move(json)) {
     }
 
     bool MarketSorter::compareProperties(const Data::Market* l, const Data::Market* r, bool& success, std::string& prop, bool desc) const {
@@ -264,7 +266,7 @@ namespace Data {
         const Data::Market* l = (Data::Market*)(&lhs);
         const Data::Market* r = (Data::Market*)(&rhs);
 
-        for (const Json::Value &index : json) {
+        for (const Json::Value &index : json()) {
             bool success = true;
             std::string property = index["property"].asString();
             bool desc = index["direction"].asString() == "DESC";
