@@ -5,13 +5,13 @@
 #ifndef SXCLIENT_NAVIGATIONLOADER_H
 #define SXCLIENT_NAVIGATIONLOADER_H
 
-#include <3rd-party/SimpleWeb/client_https.hpp>
+#include "3rd-party/SimpleWeb/client_https.hpp"
 #include <chrono>
-#include <data_models/Market.h>
-#include <data_models/EventType.h>
-#include <data_models/Race.h>
-#include <data_models/Group.h>
-#include <data_models/Event.h>
+#include "data_models/Market.h"
+#include "data_models/EventType.h"
+#include "data_models/Race.h"
+#include "data_models/Group.h"
+#include "data_models/Event.h"
 #include "DataModels.h"
 
 using std::cout;

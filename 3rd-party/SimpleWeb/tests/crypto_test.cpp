@@ -1,5 +1,5 @@
 #include "assert.hpp"
-#include "3rd-party/SimpleWeb/crypto.hpp"
+#include "crypto.hpp"
 #include <vector>
 
 using namespace std;

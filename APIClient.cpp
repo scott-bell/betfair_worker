@@ -2,14 +2,14 @@
 // Created by scott on 22/01/2020.
 //
 
-#include <api_data/MarketFilter.h>
+#include "api_data/MarketFilter.h"
 #include <boost/property_tree/json_parser.hpp>
 #include "APIClient.h"
 #include "Authentication.h"
 #include <jsoncpp/json/json.h>
-#include <api_data/MarketCatalogue.h>
+#include "api_data/MarketCatalogue.h"
 #include <string>
-#include <api_data/APINGException.h>
+#include "api_data/APINGException.h"
 
 using HttpsClient = SimpleWeb::Client<SimpleWeb::HTTPS>;
 

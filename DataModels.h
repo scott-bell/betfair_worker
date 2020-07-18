@@ -6,14 +6,14 @@
 #define SXCLIENT_DATAMODELS_H
 
 #include <vector>
-#include <data_models/Market.h>
-#include <data_models/EventType.h>
-#include <data_models/Race.h>
-#include <data_models/Group.h>
-#include <data_models/Event.h>
+#include "data_models/Market.h"
+#include "data_models/EventType.h"
+#include "data_models/Race.h"
+#include "data_models/Group.h"
+#include "data_models/Event.h"
 #include <unordered_map>
-#include <data_models/Runner.h>
-#include <data_models/Order.h>
+#include "data_models/Runner.h"
+#include "data_models/Order.h"
 #include "DataModel.h"
 
 

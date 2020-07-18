@@ -5,8 +5,8 @@
 #ifndef SXCLIENT_WEBSERVER_H
 #define SXCLIENT_WEBSERVER_H
 
-#include <3rd-party/SimpleWeb/server_http.hpp>
-#include <data_models/Filter.h>
+#include "3rd-party/SimpleWeb/server_http.hpp"
+#include "data_models/Filter.h"
 #include "DataModels.h"
 
 using HttpServer = SimpleWeb::Server<SimpleWeb::HTTP>;

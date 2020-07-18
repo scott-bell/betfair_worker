@@ -1,5 +1,5 @@
 #include "assert.hpp"
-#include "3rd-party/SimpleWeb/status_code.hpp"
+#include "status_code.hpp"
 
 using namespace SimpleWeb;
 

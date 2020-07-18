@@ -7,7 +7,7 @@
 
 #include <unordered_map>
 #include <algorithm>
-#include <data_models/Sorter.h>
+#include "data_models/Sorter.h"
 
 template <typename T>
 class DataModel {

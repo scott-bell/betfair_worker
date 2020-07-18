@@ -1,80 +1,162 @@
-cmake_minimum_required (VERSION 3.0)
-
+set(CMAKE_CXX_STANDARD 17)
+cmake_minimum_required (VERSION 3.16)
 project (SX-Client)
 
-option(USE_STANDALONE_ASIO "set ON to use standalone Asio instead of Boost.Asio" OFF)
-option(BUILD_TESTING "set ON to build library tests" OFF)
-option(USE_OPENSSL "set OFF to build without OpenSSL" ON)
+find_package(OpenSSL)
 
 if(NOT MSVC)
-    add_compile_options(-std=c++17 -Wall -Wextra)
-    if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        add_compile_options(-Wthread-safety)
-    endif()
+	add_compile_options(-std=c++17 -Wall -Wextra)
+	if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+		add_compile_options(-Wthread-safety)
+	endif()
 else()
-    add_compile_options(/W1)
+	add_compile_options(/W1)
 endif()
 
-add_library(simple-web-server INTERFACE)
 
-target_include_directories(simple-web-server INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+add_subdirectory(3rd-party/SimpleWeb)
+add_executable(sxclientd 
+	sxclientd.cpp 
+	APIClient.cpp 
+	APIClient.h 
+	DataModels.cpp 
+	DataModels.h 
+	data_models/DataObject.cpp 
+	data_models/DataObject.h 
+	data_models/Market.cpp 
+	data_models/Market.h 
+	data_models/EventType.cpp 
+	data_models/EventType.h 
+	data_models/Race.cpp 
+	data_models/Race.h 
+	data_models/Group.cpp 
+	data_models/Group.h 
+	data_models/Event.cpp 
+	data_models/Event.h 
+	NavigationLoader.cpp 
+	NavigationLoader.h 
+	api_data/MarketFilter.cpp 
+	api_data/MarketFilter.h 
+	api_data/MarketCatalogue.cpp 
+	api_data/MarketCatalogue.h 
+	api_data/MarketDescription.cpp 
+	api_data/MarketDescription.h 
+	api_data/MarketLineRangeInfo.cpp 
+	api_data/MarketLineRangeInfo.h 
+	api_data/PriceLadderDescription.cpp 
+	api_data/PriceLadderDescription.h 
+	api_data/RunnerCatalog.cpp 
+	api_data/RunnerCatalog.h 
+	api_data/EventType.cpp 
+	api_data/EventType.h 
+	api_data/Competition.cpp 
+	api_data/Competition.h 
+	api_data/Event.cpp 
+	api_data/Event.h 
+	api_data/Runner.cpp 
+	api_data/Runner.h 
+	api_data/Order.cpp 
+	api_data/Order.h 
+	api_data/Match.cpp 
+	api_data/Match.h 
+	api_data/StartingPrices.cpp 
+	api_data/StartingPrices.h 
+	api_data/PriceSize.cpp 
+	api_data/PriceSize.h 
+	api_data/ClearedOrderSummary.cpp 
+	api_data/ClearedOrderSummary.h 
+	api_data/ItemDescription.cpp 
+	api_data/ItemDescription.h 
+	api_data/RunnerId.cpp 
+	api_data/RunnerId.h 
+	api_data/CurrentOrderSummaryReport.cpp 
+	api_data/CurrentOrderSummaryReport.h 
+	api_data/CurrentOrderSummary.cpp 
+	api_data/CurrentOrderSummary.h 
+	api_data/ExchangePrices.cpp 
+	api_data/ExchangePrices.h 
+	api_data/EventResult.cpp 
+	api_data/EventResult.h 
+	api_data/CompetitionResult.cpp 
+	api_data/CompetitionResult.h 	
+	api_data/EventTypeResult.cpp 
+	api_data/EventTypeResult.h 
+	api_data/MarketTypeResult.cpp 
+	api_data/MarketTypeResult.h 
+	api_data/CountryCodeResult.cpp 
+	api_data/CountryCodeResult.h 
+	api_data/PlaceExecutionReport.cpp 
+	api_data/PlaceExecutionReport.h 
+	api_data/PlaceInstructionReport.cpp 
+	api_data/PlaceInstructionReport.h 
+	api_data/PlaceInstruction.cpp 
+	api_data/PlaceInstruction.h 
+	api_data/LimitOrder.cpp 
+	api_data/LimitOrder.h 
+	api_data/LimitOnCloseOrder.cpp 
+	api_data/LimitOnCloseOrder.h 
+	api_data/MarketOnCloseOrder.cpp 
+	api_data/MarketOnCloseOrder.h 
+	api_data/MarketVersion.cpp 
+	api_data/MarketVersion.h 
+	api_data/PriceProjection.cpp 
+	api_data/PriceProjection.h 
+	api_data/ExBestOffersOverrides.cpp 
+	api_data/ExBestOffersOverrides.h 
+	api_data/MarketBook.cpp 
+	api_data/MarketBook.h 
+	api_data/KeyLineDescription.cpp 
+	api_data/KeyLineDescription.h 
+	api_data/KeyLineSelection.cpp 
+	api_data/KeyLineSelection.h 
+	api_data/TimeRange.cpp 
+	api_data/TimeRange.h 
+	api_data/CancelInstruction.cpp 
+	api_data/CancelInstruction.h 
+	api_data/CancelExecutionReport.cpp 
+	api_data/CancelExecutionReport.h 
+	api_data/CancelInstructionReport.cpp 
+	api_data/CancelInstructionReport.h 
+	api_data/UpdateInstruction.cpp 
+	api_data/UpdateInstruction.h 
+	api_data/UpdateExecutionReport.cpp 
+	api_data/UpdateExecutionReport.h 
+	api_data/UpdateInstructionReport.cpp 
+	api_data/UpdateInstructionReport.h 
+	api_data/ReplaceInstruction.cpp 
+	api_data/ReplaceInstruction.h 
+	api_data/ReplaceExecutionReport.cpp 
+	api_data/ReplaceExecutionReport.h 
+	api_data/ReplaceInstructionReport.cpp 
+	api_data/ReplaceInstructionReport.h 
+	Authentication.cpp 
+	Authentication.h 
+	api_data/APINGException.cpp 
+	api_data/APINGException.h 
+	WebServer.cpp 
+	WebServer.h 
+	Utility.cpp 
+	Utility.h 
+	TaskManager.cpp 
+	TaskManager.h 
+	Application.cpp 
+	Application.h 
+	data_models/Runner.cpp 
+	data_models/Runner.h 
+	DataModel.h 
+	data_models/Order.cpp 
+	data_models/Order.h 
+	data_models/Filter.cpp 
+	data_models/Filter.h 
+	data_models/MarketFilter.cpp 
+	data_models/MarketFilter.h 
+	data_models/MarketRunner.cpp 
+	data_models/MarketRunner.h 
+	api_data/ClearedOrderSummaryReport.cpp 
+	api_data/ClearedOrderSummaryReport.h 
+	data_models/Sorter.cpp 
+	data_models/Sorter.h 
+	data_models/MarketSorter.cpp 
+	data_models/MarketSorter.h)
 
-find_package(Threads REQUIRED)
-target_link_libraries(simple-web-server INTERFACE ${CMAKE_THREAD_LIBS_INIT})
-
-if(USE_STANDALONE_ASIO)
-    target_compile_definitions(simple-web-server INTERFACE USE_STANDALONE_ASIO)
-    find_path(ASIO_PATH asio.hpp)
-    if(NOT ASIO_PATH)
-        message(FATAL_ERROR "Standalone Asio not found")
-    else()
-        target_include_directories(simple-web-server INTERFACE ${ASIO_PATH})
-    endif()
-else()
-    find_package(Boost 1.53.0 COMPONENTS system thread REQUIRED)
-    target_link_libraries(simple-web-server INTERFACE ${Boost_LIBRARIES})
-    target_include_directories(simple-web-server INTERFACE ${Boost_INCLUDE_DIR})
-    if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.9)
-        target_compile_definitions(simple-web-server INTERFACE USE_BOOST_REGEX)
-        find_package(Boost 1.53.0 COMPONENTS regex REQUIRED)
-        target_link_libraries(simple-web-server INTERFACE ${Boost_LIBRARIES})
-        target_include_directories(simple-web-server INTERFACE ${Boost_INCLUDE_DIR})
-    endif()
-endif()
-if(WIN32)
-    target_link_libraries(simple-web-server INTERFACE ws2_32 wsock32)
-endif()
-
-if(APPLE)
-    set(OPENSSL_ROOT_DIR "/usr/local/opt/openssl")
-endif()
-if(USE_OPENSSL)
-    find_package(OpenSSL)
-endif()
-if(OPENSSL_FOUND)
-    target_compile_definitions(simple-web-server INTERFACE HAVE_OPENSSL)
-    target_link_libraries(simple-web-server INTERFACE ${OPENSSL_LIBRARIES})
-    target_include_directories(simple-web-server INTERFACE ${OPENSSL_INCLUDE_DIR})
-endif()
-
-if("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_SOURCE_DIR}")
-    find_package(Boost 1.53.0 COMPONENTS system thread filesystem)
-    if(Boost_FOUND)
-        if(OPENSSL_FOUND)
-            add_executable(sxclientd sxclientd.cpp data_models/Market.cpp data_models/Market.h data_models/EventType.cpp data_models/EventType.h data_models/Race.cpp data_models/Race.h data_models/Group.cpp data_models/Group.h data_models/Event.cpp data_models/Event.h NavigationLoader.cpp NavigationLoader.h DataModels.cpp DataModels.h data_models/DataObject.cpp data_models/DataObject.h api_data/MarketFilter.cpp api_data/MarketFilter.h APIClient.cpp APIClient.h api_data/MarketCatalogue.cpp api_data/MarketCatalogue.h api_data/MarketDescription.cpp api_data/MarketDescription.h api_data/MarketLineRangeInfo.cpp api_data/MarketLineRangeInfo.h api_data/PriceLadderDescription.cpp api_data/PriceLadderDescription.h api_data/RunnerCatalog.cpp api_data/RunnerCatalog.h api_data/EventType.cpp api_data/EventType.h api_data/Competition.cpp api_data/Competition.h api_data/Event.cpp api_data/Event.h api_data/Runner.cpp api_data/Runner.h api_data/Order.cpp api_data/Order.h api_data/Match.cpp api_data/Match.h api_data/StartingPrices.cpp api_data/StartingPrices.h api_data/PriceSize.cpp api_data/PriceSize.h api_data/ClearedOrderSummary.cpp api_data/ClearedOrderSummary.h api_data/ItemDescription.cpp api_data/ItemDescription.h api_data/RunnerId.cpp api_data/RunnerId.h api_data/CurrentOrderSummaryReport.cpp api_data/CurrentOrderSummaryReport.h api_data/CurrentOrderSummary.cpp api_data/CurrentOrderSummary.h api_data/ExchangePrices.cpp api_data/ExchangePrices.h api_data/EventResult.cpp api_data/EventResult.h api_data/CompetitionResult.cpp api_data/CompetitionResult.h api_data/EventTypeResult.cpp api_data/EventTypeResult.h api_data/MarketTypeResult.cpp api_data/MarketTypeResult.h api_data/CountryCodeResult.cpp api_data/CountryCodeResult.h api_data/PlaceExecutionReport.cpp api_data/PlaceExecutionReport.h api_data/PlaceInstructionReport.cpp api_data/PlaceInstructionReport.h api_data/PlaceInstruction.cpp api_data/PlaceInstruction.h api_data/LimitOrder.cpp api_data/LimitOrder.h api_data/LimitOnCloseOrder.cpp api_data/LimitOnCloseOrder.h api_data/MarketOnCloseOrder.cpp api_data/MarketOnCloseOrder.h api_data/MarketVersion.cpp api_data/MarketVersion.h api_data/PriceProjection.cpp api_data/PriceProjection.h api_data/ExBestOffersOverrides.cpp api_data/ExBestOffersOverrides.h api_data/MarketBook.cpp api_data/MarketBook.h api_data/KeyLineDescription.cpp api_data/KeyLineDescription.h api_data/KeyLineSelection.cpp api_data/KeyLineSelection.h api_data/TimeRange.cpp api_data/TimeRange.h api_data/CancelInstruction.cpp api_data/CancelInstruction.h api_data/CancelExecutionReport.cpp api_data/CancelExecutionReport.h api_data/CancelInstructionReport.cpp api_data/CancelInstructionReport.h api_data/UpdateInstruction.cpp api_data/UpdateInstruction.h api_data/UpdateExecutionReport.cpp api_data/UpdateExecutionReport.h api_data/UpdateInstructionReport.cpp api_data/UpdateInstructionReport.h api_data/ReplaceInstruction.cpp api_data/ReplaceInstruction.h api_data/ReplaceExecutionReport.cpp api_data/ReplaceExecutionReport.h api_data/ReplaceInstructionReport.cpp api_data/ReplaceInstructionReport.h Authentication.cpp Authentication.h api_data/APINGException.cpp api_data/APINGException.h WebServer.cpp WebServer.h Utility.cpp Utility.h TaskManager.cpp TaskManager.h Application.cpp Application.h data_models/Runner.cpp data_models/Runner.h DataModel.h data_models/Order.cpp data_models/Order.h data_models/Filter.cpp data_models/Filter.h data_models/MarketFilter.cpp data_models/MarketFilter.h data_models/MarketRunner.cpp data_models/MarketRunner.h api_data/ClearedOrderSummaryReport.cpp api_data/ClearedOrderSummaryReport.h data_models/Sorter.cpp data_models/Sorter.h data_models/MarketSorter.cpp data_models/MarketSorter.h)
-            target_link_libraries(sxclientd simple-web-server)
-            target_link_libraries(sxclientd ${Boost_LIBRARIES})
-            target_include_directories(sxclientd PRIVATE ${Boost_INCLUDE_DIR})
-        endif()
-     endif()
-    set(BUILD_TESTING ON)
-
-    install(FILES 3rd-party/SimpleWeb/asio_compatibility.hpp 3rd-party/SimpleWeb/server_http.hpp 3rd-party/SimpleWeb/client_http.hpp 3rd-party/SimpleWeb/server_https.hpp 3rd-party/SimpleWeb/client_https.hpp 3rd-party/SimpleWeb/crypto.hpp 3rd-party/SimpleWeb/utility.hpp 3rd-party/SimpleWeb/status_code.hpp 3rd-party/SimpleWeb/mutex.hpp DESTINATION include/simple-web-server)
-endif()
-
-if(BUILD_TESTING)
-    enable_testing()
-    add_subdirectory(3rd-party/SimpleWeb/tests)
-endif()
-
-target_link_libraries(sxclientd jsoncpp)
+target_link_libraries(sxclientd PUBLIC simple-web-server jsoncpp)
