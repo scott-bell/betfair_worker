@@ -12,14 +12,14 @@
 
 int main() {
 
-    DataModels bd;
-    NavigationLoader nl(bd);
+    DataModels dataModels;
+    NavigationLoader navigationLoader(dataModels);
     APIClient api;
-    nl.init();
+    navigationLoader.init();
 
-    std::thread taskThread = std::thread(TaskManager(bd,api));
+    std::thread taskThread = std::thread(TaskManager(dataModels, api));
 
-    WebServer ws(bd);
+    WebServer ws(dataModels);
     ws.init();
 
     Application::state = Application::State::READY;

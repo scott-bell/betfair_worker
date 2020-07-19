@@ -10,8 +10,9 @@
 #include "APIClient.h"
 
 class TaskManager {
-    DataModels& bd;
-    APIClient& api;
+    DataModels& m_dataModels;
+    APIClient& m_api;
+    std::set<std::string> m_detailedMarketIds;
     void getMarketCatalogue(const std::set<std::string>& marketIds);
     void getMarketBook(const std::set<std::string>& marketIds);
     void getOrders();

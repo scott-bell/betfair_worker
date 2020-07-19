@@ -35,6 +35,11 @@ void NavigationLoader::init() {
                 {
                     Json::Value json;
                     {
+                        if (response->status_code != "200 OK") {
+                            std::cout << response->status_code << std::endl;
+                            std::cout << response->content.string() << std::endl;
+                            throw std::runtime_error(response->status_code);
+                        }
                         auto t1 = std::chrono::high_resolution_clock::now();
                         std::cout << "Parsing JSON structure ... " << response->content.size() << " bytes" << std::endl;
                         response->content >> json;
